@@ -33,7 +33,7 @@
       showIndicator: {
         type: Boolean,
         default: true
-      }
+      },
     },
     data: function () {
 		  return {
@@ -57,6 +57,23 @@
         // b站评论区有几种方法解决，可以参考，但是好像后期会改进这部分代码，这里先不修改
       }, 350)
     },
+    // activated () {
+    //   // 1.操作DOM, 在前后添加Slide
+    //   setTimeout(() => {
+    //     this.handleDom();
+
+    //     // 2.开启定时器
+    //     this.startTimer();
+    //     // 这里的延时可以适当加长一点，因为如果时长短，可能会导致画面渲染快过拿到数据
+    //     // 出现空图片，要刷新才能正常展示
+    //     // 当然这是治标不治本的方法，如果网络堵塞又需要加长延时，延时太高会造成卡顿的效果
+    //     // b站评论区有几种方法解决，可以参考，但是好像后期会改进这部分代码，这里先不修改
+    //   }, 350)
+    // },
+    deactivated () {
+      this.stopTimer()
+    },
+
     methods: {
 		  /**
        * 定时器操作
@@ -125,6 +142,7 @@
         // 1.获取要操作的元素
         let swiperEl = document.querySelector('.swiper');
         let slidesEls = swiperEl.getElementsByClassName('slide');
+        // let slidesEls = swiperEl.getElementsByTagName("swiper-item");
 
         // 2.保存个数
         this.slideCount = slidesEls.length;

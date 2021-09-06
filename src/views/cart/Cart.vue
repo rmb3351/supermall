@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h2>这里是分类</h2>
+    <h2>这里是购物车</h2>
   </div>
 </template>
 
 <script>
 export default {
-  name:'Classification',
+  name:'Cart',
   data(){
    return {
 

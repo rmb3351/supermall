@@ -7,3 +7,14 @@ export function getHomeMultidata(){
     url:"/home/multidata"
   })
 }
+
+export function getHomeGoods(type,page){
+  return request({
+    url:"/home/data",
+    // 这里params里的参数直接作为？后的url参数格式填入
+    params:{
+      type,
+      page
+    }
+  })
+}
