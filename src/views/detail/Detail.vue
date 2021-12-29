@@ -40,7 +40,7 @@ import {
   Goods,
   Shop,
   GoodsParam,
-  getRecommend,
+  getRecommend
 } from "network/detail";
 
 import DetailNavBar from "./childComponents/DetailNavBar.vue";
@@ -55,7 +55,10 @@ import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
 import { debounce } from "common/utils";
-import { itemListenerMixin } from "common/mixins";
+import { itemListenerMixin, backToTopMixin } from "common/mixins";
+
+// 和mapGetters用法相同，可以把actions里的东西映射到methods里面
+import { mapActions } from "vuex";
 
 export default {
   name: "Detail",
@@ -68,9 +71,9 @@ export default {
     DetailGoodsParam,
     DetailCommentInfo,
     Scroll,
-    GoodsList,
+    GoodsList
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backToTopMixin],
   data() {
     return {
       // 建立这个数据是为了在router里的path能够取到动态的url
@@ -84,10 +87,14 @@ export default {
       goodsParam: {},
       commentInfo: {},
       recommends: [],
-      detailTopYs: [0],
+      detailTopYs: [0]
     };
   },
   methods: {
+    ...mapActions({
+      // 不用原名,因为这里有同名的方法
+      add: "addToCart"
+    }),
     // detail 的图片加载完成后，刷新一次滚动条，并获取参数、评论、图片的准确的offsetTop
     detailImageLoad() {
       this.$refs.scroll.scrollRefresh();
@@ -146,6 +153,7 @@ export default {
     },
     contentScroll(position) {
       // console.log(this.detailTopYs);
+      this.bttShow(position);
       // 这里用len-1是因为数组里最后的大数字是为了下标不越界而且简化if条件而添加的，不用拿来判断
       for (let i = 0; i < this.detailTopYs.length - 1; i++) {
         // console.log(this.$refs.navbar.currentIndex);
@@ -160,6 +168,30 @@ export default {
         }
       }
     },
+    addToCart(count) {
+      const purchase = {};
+      purchase.image = this.topImages[0];
+      purchase.title = this.goods.title;
+      purchase.desc = this.goods.desc;
+      purchase.price = this.goods.realPrice;
+      // iid用来区分商品，给每个商品一个标识符
+      purchase.iid = this.iid;
+      purchase.count = count;
+      // 这里需要使用vuex,把goods对象作为参数提交到mutations里的addToCart函数里
+      // 因为所有对vuex里state的修改都要经由mutations来完成
+      // this.$store.commit("addToCart",purchase)
+      // 重构mutations后，这里分发到actions，再由vuex内部commit到mutations里
+      // 现在actions里返回了promise,这里可以直接then了
+      // this.$store.dispatch('addToCart', purchase).then(res => {
+      //   console.log(res)
+      // })
+      // 因为添加了mapactions，这里可以直接this.add了
+      this.add(purchase).then(res => {
+        // console.log(res);
+        // 直接把返回的res作为参数调用插件$toast的show方法
+        this.$toast.show(res);
+      });
+    }
   },
   // 因为路由已经keep-alive了，所以只会created一次，所以要在activated里重置iid
   // 或者在keep-alive里去掉Detail，有时候用activated会出现轮播图数量不对（有重复图片）的问题
@@ -167,7 +199,7 @@ export default {
     // 获取具体路由对象的参数iid
     this.iid = this.$route.params.iid;
     // 根据iid请求轮播图的数据
-    getDetails(this.iid).then((res) => {
+    getDetails(this.iid).then(res => {
       // console.log(res);
       // 由于都是要用res.result，所以全部封装进常量data
       const data = res.result;
@@ -193,7 +225,7 @@ export default {
         // console.log(this.commentInfo.user.avatar);
       }
     });
-    getRecommend().then((res) => {
+    getRecommend().then(res => {
       // 直接获取数据存到数组里，然后通过首页的goodlist展示
       this.recommends = res.data.list;
       console.log(this.recommends[0].image);
@@ -212,7 +244,7 @@ export default {
       debounce(this.$refs.scroll.scrollRefresh, 100);
     });
     // console.log("Detail解绑ImageLoad成功");
-  },
+  }
   // mounted () {
   //   this.$refs.scroll.scrollRefresh()
   // }
