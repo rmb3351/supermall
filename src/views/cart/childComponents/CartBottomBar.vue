@@ -22,7 +22,10 @@ import { mapGetters } from "vuex";
 export default {
   name: "CartBottomBar",
   data() {
-    return {};
+    return {
+      isChecking: false,
+      isNotLogin: true
+    };
   },
   components: {
     CheckButton
@@ -69,6 +72,8 @@ export default {
     pay() {
       if (this.purchaseCount === 0) {
         this.$toast.show("请先选择要购买的商品");
+      } else if (this.isNotLogin) {
+        this.$router.replace("/login");
       }
     }
   }
