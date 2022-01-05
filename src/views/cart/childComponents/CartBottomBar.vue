@@ -17,14 +17,14 @@
 <script>
 import CheckButton from "components/common/checkButton/CheckButton";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "CartBottomBar",
   data() {
     return {
-      isChecking: false,
-      isNotLogin: true
+      // 决定是否显示遮罩层
+      isChecking: false
     };
   },
   components: {
@@ -32,6 +32,9 @@ export default {
   },
   computed: {
     ...mapGetters(["cart"]),
+    ...mapState({
+      isIn: "loggedIn"
+    }),
     // 计算总价
     totalPrice() {
       return (
@@ -53,7 +56,7 @@ export default {
     },
     isCheckedAll() {
       // 空车默认不全选
-      if (this.cart.length == 0) return false;
+      if (this.cart.length === 0) return false;
       // 只要找到有没选中的就返回false
       return !this.cart.find(item => !item.checked);
     }
@@ -70,9 +73,9 @@ export default {
       }
     },
     pay() {
-      if (this.purchaseCount === 0) {
+      if (!this.cart.find(item => item.count > 0 && item.checked)) {
         this.$toast.show("请先选择要购买的商品");
-      } else if (this.isNotLogin) {
+      } else if (!this.isIn) {
         this.$router.replace("/login");
       }
     }

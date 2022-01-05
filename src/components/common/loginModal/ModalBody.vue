@@ -13,19 +13,25 @@
         <span class="iconfont icon-password"></span>
         <input ref="pswd_sure" type="password" placeholder="确认密码" />
       </div>
-      <div class="login-button" @click="checkForRegister">{{ buttonText }}</div>
+      <div class="login-button" @click="checkForRegister" v-show="!loginShow">
+        {{ buttonText }}
+      </div>
+      <div class="login-button" @click="checkForLogin" v-show="loginShow">
+        {{ buttonText }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getItem, setItem } from "common/utils";
+import { LOGGED_IN } from "@/store/mutations-types";
 export default {
   name: "ModalBody",
   data() {
     return {
       unameReg: /^[a-zA-Z0-9_-]{4,16}$/,
       pswdReg: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[a-z])\S*$/,
-      unames: ["rmb123", "coderwhy", "morong126"],
       // props直接修改不规范，所以定义一个基于它的data，方便修改
       loginShow: this.isShowLogin
     };
@@ -36,9 +42,11 @@ export default {
       if (this.loginShow) return "登录";
       return "注册";
     },
-    // 用户名查重
-    unameExisting(uname) {
-      return this.unames.includes(uname);
+    // 用户名查重，计算属性不接受参数，需要传入时返回函数即可
+    unameExisting() {
+      return function(uname) {
+        return getItem(uname);
+      };
     }
   },
   methods: {
@@ -63,12 +71,13 @@ export default {
         if (this.unameExisting(uname)) {
           this.$toast.show("这个用户名已经被别人抢注了噢", 2000);
         } else {
-          this.registerSuccess();
+          this.registerSuccess(uname, pswd);
         }
       }
     },
     // 注册成功操作
-    registerSuccess() {
+    registerSuccess(uname, pswd) {
+      setItem(uname, { uname, pswd, isLoggedIn: false });
       this.$toast.show("注册成功，请登录", 2000);
       this.$refs.uname.value = "";
       this.$refs.pswd.value = "";
@@ -76,6 +85,37 @@ export default {
       this.loginShow = true;
       // 通知父组件中的标题也需要修改样式
       this.$emit("show-changed", this.loginShow);
+    },
+    // 检测登录信息
+    checkForLogin() {
+      const uname = this.$refs.uname.value;
+      const pswd = this.$refs.pswd.value;
+      if (!this.unameReg.test(uname)) {
+        this.$toast.show(
+          "用户名要由4到16位数字、字母、下划线、减号组成噢",
+          4000
+        );
+      } else if (!this.unameExisting(uname)) {
+        this.$toast.show("这个用户名没有注册噢", 2000);
+      } else if (getItem(uname).pswd !== pswd) {
+        this.$toast.show("密码错误");
+      } else {
+        this.loginSuccess(uname, pswd);
+      }
+    },
+    // 登录成功操作
+    loginSuccess(uname) {
+      const userInfo = getItem(uname);
+      // 记录登录状态
+      userInfo.isLoggedIn = true;
+      setItem(uname, userInfo);
+      this.$toast.show("登录成功，欢迎您，" + uname + "!", 3000);
+      this.$refs.uname.value = "";
+      this.$refs.pswd.value = "";
+      // 在vuex内保存登录数据
+      this.$store.commit(LOGGED_IN, userInfo);
+      // 通知相应组件更新状态
+      this.$router.replace("/home");
     }
   },
   watch: {

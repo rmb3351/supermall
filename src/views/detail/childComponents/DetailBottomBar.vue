@@ -62,11 +62,11 @@ export default {
 <style scoped>
 .bottom-bar {
   height: 58px;
-  /* position: fixed; */
-  position: relative;
+  position: fixed;
+  width: 100vw;
+  /* position: relative; */
   background-color: #fff;
   left: 0;
-  right: 0;
   bottom: 0;
   z-index: 200;
 

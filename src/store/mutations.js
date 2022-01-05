@@ -3,7 +3,10 @@ import {
   ADD_TO_CART,
   PLUS_CART_COUNT,
   MINUS_CART_COUNT,
-  MODIFY_CART_COUNT
+  MODIFY_CART_COUNT,
+  DELETE_COUNTER,
+  LOGGED_IN,
+  LOGGED_OUT
 } from "./mutations-types";
 
 export default {
@@ -29,5 +32,23 @@ export default {
     if (payload.purchase.count === 0) payload.purchase.checked = true;
     payload.purchase.count = payload.nowCount;
     if (payload.nowCount === 0) payload.purchase.checked = false;
+  },
+  [DELETE_COUNTER](state, payload) {
+    state.cartList = state.cartList.filter(item => {
+      return !item.checked;
+    });
+  },
+  // 登录和登出的相关状态修改
+  [LOGGED_IN](state, payload) {
+    state.loggedIn = true;
+    state.loggedInUser = payload.uname;
+    state.userInfo[payload.uname]
+      ? Object.assign(state.userInfo[payload.uname], payload)
+      : (state.userInfo[payload.uname] = payload);
+  },
+  [LOGGED_OUT](state, payload) {
+    state.loggedIn = false;
+    state.loggedInUser = "";
+    state.userInfo[payload].isLoggedIn = false;
   }
 };

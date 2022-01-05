@@ -30,7 +30,7 @@ export default {
   plusCartCount(context, goods) {
     return new Promise((resolve, reject) => {
       let purchase = context.state.cartList.find(item => item.iid == goods.iid);
-      if (purchase.count === 0) {
+      if (purchase.count === 0 && !purchase.checked) {
         resolve("又为您选中这个商品啦");
       }
       context.commit(PLUS_CART_COUNT, purchase);
@@ -46,9 +46,9 @@ export default {
       let purchase = context.state.cartList.find(
         item => item.iid == goods.purchase.iid
       );
-      if (purchase.count === 0) {
+      if (purchase.count === 0 && !purchase.checked) {
         resolve("又为您选中这个商品啦");
-      } else if (goods.value === 0) {
+      } else if (goods.value === 0 && purchase.checked) {
         resolve("帮您取消选中啦");
       }
       context.commit(MODIFY_CART_COUNT, { purchase, nowCount: goods.value });

@@ -1,7 +1,8 @@
 <template>
   <!-- profile的navbar下的第一个组件：个人信息 -->
   <div id="user-info" @click="toLogin">
-    <a href="#" class="clear-fix">
+    <!-- 取消a标签点击跳转，不然和外层监听点击冲突会有第一次无法跳转的bug -->
+    <a href="javascript:;" class="clear-fix">
       <slot name="user-icon">
         <svg class="privateImage-svg left">
           <use
@@ -12,7 +13,7 @@
       </slot>
       <div class="login-info left">
         <slot name="user-nickname">
-          <div>登录/注册</div>
+          <div>{{ uname }}</div>
         </slot>
         <div class="phone">
           <span>
@@ -39,14 +40,24 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "UserInfo",
-  data() {
-    return {};
+  computed: {
+    ...mapState({
+      isIn: "loggedIn",
+      user: "loggedInUser"
+    }),
+    uname() {
+      if (this.isIn) return this.user;
+      return "登录/注册";
+    }
   },
   methods: {
     toLogin() {
-      this.$router.replace("/login");
+      if (!this.isIn) {
+        this.$router.replace("/login");
+      }
     }
   }
 };
