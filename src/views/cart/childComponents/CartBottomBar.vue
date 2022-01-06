@@ -2,20 +2,33 @@
   <div class="cart-bottom-bar">
     <div>
       <check-button
-        :is-checked="isCheckedAll"
+        :is-checked="cartCheckedAll"
         class="check-button"
         @click.native="checkAll"
       >
       </check-button>
       <div>全选</div>
     </div>
-    <div class="show-price">合计：{{ totalPrice }}</div>
-    <span class="show-count" @click="pay">去结算({{ purchaseCount }})</span>
+    <div class="show-price">合计：￥ {{ cartPrice }}</div>
+    <span class="go-buy" @click="pay" v-show="!isManaging"
+      >去结算({{ checkedCount }})</span
+    >
+    <span class="go-bye" @click="checkForDelete" v-show="isManaging">移除</span>
+    <div class="check-for-delete" v-show="isChecking">
+      <div>
+        <span>确定删除这些吗？</span>
+        <button class="btn_left" @click="deleteItems">确定</button>
+        <button class="btn_right" @click="isChecking = !isChecking">
+          取消
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import CheckButton from "components/common/checkButton/CheckButton";
+import { DELETE_CHOSEN, CHECKED_ALL } from "@/store/mutations-types.js";
 
 import { mapGetters, mapState } from "vuex";
 
@@ -31,53 +44,41 @@ export default {
     CheckButton
   },
   computed: {
-    ...mapGetters(["cart"]),
+    ...mapGetters([
+      "cart",
+      "cartLength",
+      "cartChecked",
+      "checkedCount",
+      "cartPrice",
+      "cartCheckedAll"
+    ]),
     ...mapState({
       isIn: "loggedIn"
-    }),
-    // 计算总价
-    totalPrice() {
-      return (
-        // 首先用过滤器过滤，只留下被选中的商品
-        "￥" +
-        this.cart
-          .filter(item => {
-            return item.checked;
-            // 然后进行汇总，初始值为0，把过滤剩下的item的价格和数量相乘，存入preValue，再进行下次操作
-          })
-          .reduce((preValue, item) => {
-            return preValue + item.price * item.count;
-          }, 0)
-          .toFixed(2)
-      );
-    },
-    purchaseCount() {
-      return this.cart.filter(item => item.checked).length;
-    },
-    isCheckedAll() {
-      // 空车默认不全选
-      if (this.cart.length === 0) return false;
-      // 只要找到有没选中的就返回false
-      return !this.cart.find(item => !item.checked);
-    }
+    })
   },
   methods: {
     checkAll() {
-      // 注意这里不能简写，如果直接简写成check=!isCheckedAll会有bug
-      // 因为isCheckedAll和item.checked挂钩，改着改着自己变了
-      if (this.isCheckedAll) {
-        // 对数组里每个元素进行参数函数的操作
-        this.cart.forEach(item => (item.checked = false));
-      } else {
-        this.cart.forEach(item => (item.checked = true));
-      }
+      // 为了响应式，交给mutations更新购物车
+      this.$store.commit(CHECKED_ALL, this.cartCheckedAll);
     },
     pay() {
-      if (!this.cart.find(item => item.count > 0 && item.checked)) {
+      // 需要内置转换，因为cartPrice保留了小数
+      if (this.cartPrice == 0) {
         this.$toast.show("请先选择要购买的商品");
       } else if (!this.isIn) {
         this.$router.replace("/login");
       }
+    },
+    deleteItems() {
+      this.$store.commit(DELETE_CHOSEN);
+      this.isChecking = !this.isChecking;
+    },
+    checkForDelete() {
+      if (!this.checkedCount) {
+        this.$toast.show("请选择要删除的商品");
+        return;
+      }
+      this.isChecking = !this.isChecking;
     }
   }
 };

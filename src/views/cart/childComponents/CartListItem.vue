@@ -1,11 +1,5 @@
 <template>
   <div id="shop-item">
-    <!-- <div class="item-selector">
-      <CheckButton
-        @checkBtnClick="checkedChange"
-        v-model="purchase.checked"
-      ></CheckButton>
-    </div> -->
     <check-button
       :is-checked="purchase.checked"
       @click.native="ckbClick"
@@ -36,6 +30,8 @@ import CheckButton from "components/common/checkButton/CheckButton";
 
 import { mapActions } from "vuex";
 
+import { CHECKED_ITEM } from "@/store/mutations-types";
+
 export default {
   name: "CartListItem",
   data() {
@@ -62,8 +58,7 @@ export default {
       modify: "modifyCartCount"
     }),
     ckbClick() {
-      this.purchase.checked = !this.purchase.checked;
-      // console.log(this.purchase.checked);
+      this.$store.commit(CHECKED_ITEM, this.purchase);
     },
     // 修改购物车内商品数量的一系列方法
     plusCartCount() {

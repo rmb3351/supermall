@@ -4,7 +4,9 @@ import {
   PLUS_CART_COUNT,
   MINUS_CART_COUNT,
   MODIFY_CART_COUNT,
-  DELETE_COUNTER,
+  DELETE_CHOSEN,
+  CHECKED_ITEM,
+  CHECKED_ALL,
   LOGGED_IN,
   LOGGED_OUT
 } from "./mutations-types";
@@ -33,10 +35,22 @@ export default {
     payload.purchase.count = payload.nowCount;
     if (payload.nowCount === 0) payload.purchase.checked = false;
   },
-  [DELETE_COUNTER](state, payload) {
+  [DELETE_CHOSEN](state, payload) {
     state.cartList = state.cartList.filter(item => {
       return !item.checked;
     });
+  },
+  // 购物车的选中和全选
+  [CHECKED_ITEM](state, payload) {
+    const index = state.cartList.indexOf(payload);
+    state.cartList[index].checked = !payload.checked;
+  },
+  [CHECKED_ALL](state, payload) {
+    if (payload) {
+      state.cartList.forEach(item => (item.checked = false));
+    } else {
+      state.cartList.forEach(item => (item.checked = true));
+    }
   },
   // 登录和登出的相关状态修改
   [LOGGED_IN](state, payload) {
