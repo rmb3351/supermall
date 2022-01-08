@@ -14,6 +14,17 @@
 </template>
 
 <script>
+import NavBar from "components/common/navbar/NavBar";
+import Scroll from "components/common/scroll/Scroll";
+
+import CartList from "./childComponents/CartList.vue";
+import CartBottomBar from "./childComponents/CartBottomBar.vue";
+
+//mapgetters是一个把getters里的函数映射到计算属性的辅助函数
+import { mapGetters } from "vuex";
+
+import { setItem } from "common/utils";
+
 export default {
   name: "Cart",
   data() {

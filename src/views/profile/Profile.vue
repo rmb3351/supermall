@@ -61,8 +61,11 @@ export default {
   methods: {
     logOut() {
       const userInfo = getItem(this.user);
+      // localStorage里指定user的登录状态置为false
       userInfo.isLoggedIn = false;
       setItem(this.user, userInfo);
+      // 登录用户置空
+      setItem("loggedInUser", "");
       this.$store.commit(LOGGED_OUT, this.user);
     }
   },

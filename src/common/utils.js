@@ -57,3 +57,29 @@ export function setItem(key, value) {
 export function getItem(key) {
   return JSON.parse(localStorage.getItem(key));
 }
+// 登录时合并游客和登录用户购物车
+export function mergeArr(arr1, arr2) {
+  // 合并、转成对象，用iid区分是否合并
+  const arr3 = arr1.concat(arr2);
+  const arr3Obj = {};
+  arr3.forEach(element => {
+    arr3Obj[element.iid]
+      ? (arr3Obj[element.iid].count += element.count)
+      : (arr3Obj[element.iid] = element);
+  });
+  const arrMerge = [];
+  // 再把对象转回数组
+  for (let key in arr3Obj) {
+    arrMerge.push(arr3Obj[key]);
+  }
+  console.log(arrMerge);
+  return arrMerge;
+}
+// mutations里用常数名封装一个函数复用无效，所以在这里操作，可能是不规范操作，不过没什么问题
+export function syncUserInfo(state) {
+  // 如果登录了，还需要对vuex和localStorage里登录用户的购物车信息进行更新
+  if (state.loggedIn) {
+    state.userInfo[state.loggedInUser].cart = state.cartList;
+    setItem(state.loggedInUser, state.userInfo[state.loggedInUser]);
+  }
+}

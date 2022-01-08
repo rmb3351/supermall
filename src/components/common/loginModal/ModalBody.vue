@@ -24,8 +24,9 @@
 </template>
 
 <script>
-import { getItem, setItem } from "common/utils";
+import { getItem, setItem, mergeArr } from "common/utils";
 import { LOGGED_IN } from "@/store/mutations-types";
+import { mapGetters } from "vuex";
 export default {
   name: "ModalBody",
   data() {
@@ -38,6 +39,7 @@ export default {
   },
   props: ["isShowLogin"],
   computed: {
+    ...mapGetters(["cart"]),
     buttonText() {
       if (this.loginShow) return "登录";
       return "注册";
@@ -77,7 +79,7 @@ export default {
     },
     // 注册成功操作
     registerSuccess(uname, pswd) {
-      setItem(uname, { uname, pswd, isLoggedIn: false });
+      setItem(uname, { uname, pswd, isLoggedIn: false, cart: [] });
       this.$toast.show("注册成功，请登录", 2000);
       this.$refs.uname.value = "";
       this.$refs.pswd.value = "";
@@ -108,7 +110,11 @@ export default {
       const userInfo = getItem(uname);
       // 记录登录状态
       userInfo.isLoggedIn = true;
+      // 游客状态购物车和登录账号的购物车合并
+      userInfo.cart = mergeArr(this.cart, userInfo.cart);
       setItem(uname, userInfo);
+      // 记录登录的用户，在项目重启时可以用到
+      setItem("loggedInUser", uname);
       this.$toast.show("登录成功，欢迎您，" + uname + "!", 3000);
       this.$refs.uname.value = "";
       this.$refs.pswd.value = "";

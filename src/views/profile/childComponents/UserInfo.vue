@@ -55,9 +55,7 @@ export default {
   },
   methods: {
     toLogin() {
-      if (!this.isIn) {
-        this.$router.replace("/login");
-      }
+      this.$router.replace("/login");
     }
   }
 };
@@ -83,6 +81,7 @@ export default {
 #user-info .login-info {
   color: #fff;
   margin: 10px 0 0 10px;
+  font-size: 18px;
 }
 
 #user-info .login-info .phone {

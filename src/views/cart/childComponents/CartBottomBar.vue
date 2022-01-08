@@ -65,7 +65,7 @@ export default {
       // 需要内置转换，因为cartPrice保留了小数
       if (this.cartPrice == 0) {
         this.$toast.show("请先选择要购买的商品");
-      } else if (!this.isIn) {
+      } else {
         this.$router.replace("/login");
       }
     },
