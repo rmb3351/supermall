@@ -1,14 +1,14 @@
 <template>
   <div class="login">
-    <nav-bar class="nav-bar">
+    <back-nav-bar class="nav-bar">
       <div slot="center">登录/注册</div>
-    </nav-bar>
+    </back-nav-bar>
     <login-modal></login-modal>
   </div>
 </template>
 
 <script>
-import NavBar from "components/common/navbar/NavBar";
+import BackNavBar from "components/common/navbar/BackNavBar";
 import LoginModal from "components/common/loginModal/LoginModal";
 export default {
   name: "Login",
@@ -16,7 +16,7 @@ export default {
     return {};
   },
   components: {
-    NavBar,
+    BackNavBar,
     LoginModal
   }
 };
@@ -24,16 +24,9 @@ export default {
 
 <style scoped>
 .login {
-  position: absolute;
-  top: 0;
-  bottom: 49px;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   background: url(~assets/img/login/login_bg.png);
   background-size: cover;
-}
-.nav-bar {
-  background-color: var(--color-tint);
-  font-weight: 700;
-  color: #fff;
 }
 </style>

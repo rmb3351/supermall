@@ -56,8 +56,8 @@ export default {
 <style scoped>
 .login-modal {
   box-sizing: border-box;
-  margin: 120px auto;
-  width: 346px;
+  margin: 45% auto;
+  width: 90%;
   box-shadow: 0 0 10px #ccc;
   border: 1px solid transparent;
   border-radius: 20px;

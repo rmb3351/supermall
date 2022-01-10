@@ -8,6 +8,7 @@ const Category = () => import("../views/category/Category");
 const Cart = () => import("../views/cart/Cart");
 const Detail = () => import("../views/detail/Detail");
 const Login = () => import("../views/login/Login");
+const Address = () => import("../views/address/Address");
 
 Vue.use(VueRouter);
 const routes = [
@@ -18,7 +19,8 @@ const routes = [
   { path: "/profile", component: Profile },
   //传参数的方式别忘了，:加组件里有的data
   { path: "/detail/:iid", component: Detail },
-  { path: "/login", component: Login }
+  { path: "/login", component: Login },
+  { path: "/address", component: Address }
 ];
 const router = new VueRouter({
   routes,
@@ -32,9 +34,11 @@ router.beforeEach((to, from, next) => {
     } else if (from.path !== "/cart" && from.path !== "/profile") {
       // 键入地址的回主页
       next("/home");
+    } else if (from.path === "/profile") {
+      next("/address");
     } else {
-      // 去结算和用户信息点过来的后面看情况处理
-      console.log("页面还在施工中，完工才能放行噢");
+      // 去结算的后面看情况处理
+      console.log("页面还在施工中，下次再尝试噢");
     }
   } else {
     next();

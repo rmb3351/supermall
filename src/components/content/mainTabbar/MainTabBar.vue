@@ -1,5 +1,5 @@
 <template>
-  <tab-bar>
+  <tab-bar v-show="showCondition">
     <tab-bar-item path="/home">
       <!-- 在src里用别名的话前面要加上个~
       决定点击后去向哪个页面地址的是这里的path属性
@@ -62,6 +62,11 @@ export default {
       if (nowUserInfo) {
         this.$store.commit(LOGGED_IN, nowUserInfo);
       }
+    }
+  },
+  computed: {
+    showCondition() {
+      return this.$route.path !== "/address" && this.$route.path !== "/login";
     }
   }
 };
