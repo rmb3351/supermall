@@ -12,24 +12,25 @@ export default {
   name: "NavBar",
   data() {
     return {};
-  },
+  }
 };
 </script>
 
 <style scoped>
-  .nav-bar{
-    /* 弹性布局，设置了以后就可以在对应的选择器里进行布局分配 */
-    display: flex;
-    height: 44px;
-    line-height: 44px;
-    text-align: center;
-    box-shadow: 0 1px 1px rgba(100, 100, 100, .1);
-  }
-  .left,.right{
-    width: 60px;
-  }
-  .center{
-    flex:1;
-  }
-
+.nav-bar {
+  /* 弹性布局，设置了以后就可以在对应的选择器里进行布局分配 */
+  display: flex;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1);
+}
+.left,
+.right {
+  width: 60px;
+}
+.center {
+  flex: 1;
+  font-size: 18px;
+}
 </style>

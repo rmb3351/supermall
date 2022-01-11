@@ -54,6 +54,11 @@ export default {
     TabBar,
     TabBarItem
   },
+  data() {
+    return {
+      excludePaths: ["/address", "/login"]
+    };
+  },
   mounted() {
     // 记录登录状态功能：程序启动时检查是否有未登出的用户，并看看能否获取它的信息
     const nowUser = getItem("loggedInUser");
@@ -66,7 +71,11 @@ export default {
   },
   computed: {
     showCondition() {
-      return this.$route.path !== "/address" && this.$route.path !== "/login";
+      // path不包含所有excludePaths中的路径才显示
+      const flag = this.excludePaths.every(ele => {
+        return this.$route.path.indexOf(ele) === -1;
+      });
+      return flag;
     }
   }
 };

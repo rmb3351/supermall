@@ -74,8 +74,9 @@ export default {
       isIn: "loggedIn",
       user: "loggedInUser"
     })
-  }
-}
+  },
+  activated() {}
+};
 </script>
 
 <style scoped>
@@ -84,7 +85,6 @@ export default {
 }
 .nav-bar {
   background-color: var(--color-tint);
-  font-weight: 700;
   color: #fff;
 }
 .account {

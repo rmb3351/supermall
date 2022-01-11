@@ -135,10 +135,19 @@ export default {
 <style scoped>
 /* 直接用样式实现原生滚动的部分位置滚动，这里不建议用这个方法，因为据说实机操作滚动会很卡 */
 .wrapper {
-  background: red;
-  height: 150px;
-  width: 100%;
-  /* 这里的就是超出的部分直接用滚动条查看 */
-  /* overflow-y: scroll; */
+  height: 100vh;
+}
+.nav-bar {
+  background-color: var(--color-tint);
+  color: #fff;
+}
+.content {
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  bottom: 49px;
+  left: 0;
+  right: 0;
+  top: 44px;
 }
 </style>

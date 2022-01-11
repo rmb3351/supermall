@@ -1,10 +1,13 @@
 <template>
   <div class="address">
-    <back-nav-bar class="nav-bar">
-      <div slot="center">地址管理</div>
-    </back-nav-bar>
-    <div class="add-btn" @click="addNewAddress">
-      ＋ 新建收货地址
+    <router-view v-show="showRouter"></router-view>
+    <div class="content" v-show="!showRouter">
+      <back-nav-bar class="nav-bar">
+        <div slot="center">地址管理</div>
+      </back-nav-bar>
+      <div class="add-btn" @click="addNewAddress">
+        ＋ 新建收货地址
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +23,14 @@ export default {
     BackNavBar
   },
   methods: {
-    addNewAddress() {}
+    addNewAddress() {
+      this.$router.push("/address/newAddr");
+    }
+  },
+  computed: {
+    showRouter() {
+      return this.$route.path !== "/address";
+    }
   }
 };
 </script>
@@ -29,17 +39,6 @@ export default {
 .address {
   width: 100vw;
   height: 100vh;
-}
-.left {
-  width: 12px;
-  height: 21px;
-}
-.left img {
-  width: 100%;
-  height: 100%;
-  margin-left: 20px;
-  vertical-align: middle;
-  color: white;
 }
 .add-btn {
   position: fixed;

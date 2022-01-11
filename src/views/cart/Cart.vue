@@ -64,4 +64,31 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.cart {
+  height: 100vh;
+}
+.navbar {
+  background: var(--color-tint);
+  color: #fff;
+}
+.navbar .btn-top-right {
+  background-color: transparent;
+  border: 1px solid rgb(229, 229, 229);
+  outline: 0;
+  color: white;
+  padding: 3px;
+}
+/* 这里用calc计算死都不对，只能照搬主页的绝对定位的方法来用了 */
+.wrapper {
+  overflow: hidden;
+  /* height: 200px; */
+  /* 位置定死，让它自动拉伸匹配除了标题栏和导航栏的剩余部分 */
+  position: absolute;
+  bottom: 89px;
+  top: 44px;
+  left: 0;
+  right: 0;
+  /* height: calc(100%-95px); */
+}
+</style>

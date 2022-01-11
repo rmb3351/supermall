@@ -1,6 +1,5 @@
 <template>
   <div class="back-nav-bar">
-    <!-- 导航栏分为三个部分，分别用具名插槽 -->
     <div class="left" @click="goBack">
       <slot name="left">
         <div class="left-btn">
@@ -28,7 +27,7 @@ export default {
 </script>
 
 <style scoped>
-.nav-bar {
+.back-nav-bar {
   /* 弹性布局，设置了以后就可以在对应的选择器里进行布局分配 */
   display: flex;
   height: 44px;
@@ -36,7 +35,6 @@ export default {
   background-color: var(--color-tint);
   box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1);
   text-align: center;
-  font-weight: 700;
   color: white;
 }
 .left,
@@ -45,7 +43,7 @@ export default {
 }
 .left-btn {
   width: 12px;
-  height: 21px;
+  height: 22px;
 }
 .left-btn img {
   width: 100%;
@@ -56,5 +54,6 @@ export default {
 }
 .center {
   flex: 1;
+  font-size: 18px;
 }
 </style>

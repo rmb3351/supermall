@@ -9,6 +9,9 @@ const Cart = () => import("../views/cart/Cart");
 const Detail = () => import("../views/detail/Detail");
 const Login = () => import("../views/login/Login");
 const Address = () => import("../views/address/Address");
+const NewAddress = () => import("../views/address/childComponents/NewAddress");
+const ModifyAddress = () =>
+  import("../views/address/childComponents/ModifyAddress");
 
 Vue.use(VueRouter);
 const routes = [
@@ -20,7 +23,14 @@ const routes = [
   //传参数的方式别忘了，:加组件里有的data
   { path: "/detail/:iid", component: Detail },
   { path: "/login", component: Login },
-  { path: "/address", component: Address }
+  {
+    path: "/address",
+    component: Address,
+    children: [
+      { path: "newAddr", component: NewAddress },
+      { path: "modAddr", component: ModifyAddress }
+    ]
+  }
 ];
 const router = new VueRouter({
   routes,
