@@ -12,7 +12,8 @@ const state = {
   userInfo: {},
   // 方便判断登录状态和登录用户
   loggedIn: false,
-  loggedInUser: ""
+  loggedInUser: "",
+  routeChangeCount: 0
 };
 
 const store = new Vuex.Store({

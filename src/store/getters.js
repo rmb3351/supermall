@@ -26,5 +26,9 @@ export default {
     // 空车不全选
     if (!getters.cartLength) return false;
     return getters.checkedCount === getters.cartLength;
+  },
+  userAddresses(state, getters) {
+    if (!state.loggedInUser) return [];
+    return state.userInfo[state.loggedInUser].addresses;
   }
 };

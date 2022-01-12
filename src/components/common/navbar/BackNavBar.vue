@@ -13,14 +13,24 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "BackNavBar",
   data() {
     return {};
   },
+  computed: {
+    ...mapState({
+      count: "routeChangeCount"
+    })
+  },
   methods: {
     goBack() {
-      this.$router.back();
+      if (this.count > 1) {
+        this.$router.back();
+      } else {
+        this.$router.replace("/home");
+      }
     }
   }
 };

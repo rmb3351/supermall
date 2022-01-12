@@ -1,9 +1,9 @@
 <template>
-  <div class="login">
+  <div class="login" @click="pageClick">
     <back-nav-bar class="nav-bar">
       <div slot="center">登录/注册</div>
     </back-nav-bar>
-    <login-modal></login-modal>
+    <login-modal :modalAtTop="modalAtTop"></login-modal>
   </div>
 </template>
 
@@ -13,11 +13,18 @@ import LoginModal from "components/common/loginModal/LoginModal";
 export default {
   name: "Login",
   data() {
-    return {};
+    return {
+      modalAtTop: false
+    };
   },
   components: {
     BackNavBar,
     LoginModal
+  },
+  methods: {
+    pageClick(e) {
+      this.modalAtTop = e.path.length >= 11;
+    }
   }
 };
 </script>

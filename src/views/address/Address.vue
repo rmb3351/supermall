@@ -5,6 +5,11 @@
       <back-nav-bar class="nav-bar">
         <div slot="center">地址管理</div>
       </back-nav-bar>
+      <address-item
+        v-for="(item, index) in addresses"
+        :key="index"
+        :addrInfo="item"
+      ></address-item>
       <div class="add-btn" @click="addNewAddress">
         ＋ 新建收货地址
       </div>
@@ -14,13 +19,16 @@
 
 <script>
 import BackNavBar from "components/common/navbar/BackNavBar";
+import AddressItem from "./childComponents/AddressItem.vue";
+import { mapGetters } from "vuex";
 export default {
   name: "Address",
   data() {
     return {};
   },
   components: {
-    BackNavBar
+    BackNavBar,
+    AddressItem
   },
   methods: {
     addNewAddress() {
@@ -28,6 +36,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      addresses: "userAddresses"
+    }),
     showRouter() {
       return this.$route.path !== "/address";
     }

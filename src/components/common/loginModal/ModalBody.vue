@@ -1,17 +1,19 @@
 <template>
   <div>
     <div class="modal-body">
-      <div class="uname">
-        <span class="iconfont icon-yonghuming"></span>
-        <input ref="uname" type="text" placeholder="账户名/手机号/邮箱" />
-      </div>
-      <div class="pswd">
-        <span class="iconfont icon-password"></span>
-        <input ref="pswd" type="password" placeholder="密码" />
-      </div>
-      <div class="pswd-sure" v-show="!loginShow">
-        <span class="iconfont icon-password"></span>
-        <input ref="pswd_sure" type="password" placeholder="确认密码" />
+      <div class="input-content" @click="focusWhich">
+        <div class="uname">
+          <span class="iconfont icon-yonghuming"></span>
+          <input ref="uname" type="text" placeholder="账户名/手机号/邮箱" />
+        </div>
+        <div class="pswd">
+          <span class="iconfont icon-password"></span>
+          <input ref="pswd" type="password" placeholder="密码" />
+        </div>
+        <div class="pswd-sure" v-show="!loginShow">
+          <span class="iconfont icon-password"></span>
+          <input ref="pswd_sure" type="password" placeholder="确认密码" />
+        </div>
       </div>
       <div class="login-button" @click="checkForRegister" v-show="!loginShow">
         {{ buttonText }}
@@ -52,6 +54,11 @@ export default {
     }
   },
   methods: {
+    // 点击获取焦点
+    focusWhich(e) {
+      const which = e.path[e.path.length - 11].children[1];
+      which.focus();
+    },
     // 检测注册信息
     checkForRegister() {
       const uname = this.$refs.uname.value;
@@ -79,7 +86,13 @@ export default {
     },
     // 注册成功操作
     registerSuccess(uname, pswd) {
-      setItem(uname, { uname, pswd, isLoggedIn: false, cart: [] });
+      setItem(uname, {
+        uname,
+        pswd,
+        isLoggedIn: false,
+        cart: [],
+        addresses: []
+      });
       this.$toast.show("注册成功，请登录", 2000);
       this.$refs.uname.value = "";
       this.$refs.pswd.value = "";
@@ -145,9 +158,10 @@ export default {
 .pswd,
 .pswd-sure {
   position: relative;
-  margin-top: 25px;
+  /* margin-top: 25px; */
   width: 100%;
-  height: 25px;
+  height: 50px;
+  padding-top: 25px;
   border-bottom: 2px solid rgb(190, 190, 190);
 }
 .modal-body input {

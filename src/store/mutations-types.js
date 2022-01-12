@@ -9,3 +9,5 @@ export const CHECKED_ITEM = "checked_item";
 export const CHECKED_ALL = "checked_all";
 export const LOGGED_IN = "logged_in";
 export const LOGGED_OUT = "logged_out";
+export const NEW_ADDRESS = "new_address";
+export const ROUTE_CHANGE = "route_change";

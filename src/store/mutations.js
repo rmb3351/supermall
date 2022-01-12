@@ -8,7 +8,9 @@ import {
   CHECKED_ITEM,
   CHECKED_ALL,
   LOGGED_IN,
-  LOGGED_OUT
+  LOGGED_OUT,
+  NEW_ADDRESS,
+  ROUTE_CHANGE
 } from "./mutations-types";
 import { syncUserInfo } from "../common/utils";
 export default {
@@ -73,5 +75,14 @@ export default {
     state.loggedInUser = "";
     state.userInfo[payload].isLoggedIn = false;
     state.cartList = [];
+  },
+  // 保存新地址信息和修改现有地址信息的操作
+  [NEW_ADDRESS](state, payload) {
+    payload.id = state.userInfo[state.loggedInUser].addresses.length;
+    state.userInfo[state.loggedInUser].addresses.push(payload);
+  },
+  // 记录路由跳转次数，决定是否可以后退
+  [ROUTE_CHANGE](state, payload) {
+    state.routeChangeCount++;
   }
 };

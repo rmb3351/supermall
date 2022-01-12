@@ -59,7 +59,7 @@ export default {
   methods: {
     toLogin() {
       // 重定向跳转到Address时会报错，抛出异常即可
-      this.$router.replace("/login").catch(() => {});
+      this.$router.push("/login").catch(() => {});
     }
   }
 };

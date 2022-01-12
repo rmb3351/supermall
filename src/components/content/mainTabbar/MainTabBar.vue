@@ -47,7 +47,7 @@ import TabBar from "components/common/tabbar/TabBar";
 import TabBarItem from "components/common/tabbar/TabBarItem";
 
 import { getItem } from "common/utils";
-import { LOGGED_IN } from "@/store/mutations-types";
+import { LOGGED_IN, ROUTE_CHANGE } from "@/store/mutations-types";
 export default {
   name: "MainTabBar",
   components: {
@@ -76,6 +76,13 @@ export default {
         return this.$route.path.indexOf(ele) === -1;
       });
       return flag;
+    }
+  },
+  watch: {
+    $route: {
+      handler(newv, oldv) {
+        this.$store.commit(ROUTE_CHANGE);
+      }
     }
   }
 };

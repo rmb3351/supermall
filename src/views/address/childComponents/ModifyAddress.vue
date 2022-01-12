@@ -1,12 +1,16 @@
 <template>
-  <div class="mod-addr">修改收货地址</div>
+  <new-address></new-address>
 </template>
 
 <script>
+import NewAddress from "./NewAddress";
 export default {
   name: "ModifyAddress",
   data() {
     return {};
+  },
+  components: {
+    NewAddress
   }
 };
 </script>

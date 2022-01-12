@@ -1,5 +1,5 @@
 <template>
-  <div class="login-modal">
+  <div class="login-modal" :class="{ 'at-top': modalAtTop }">
     <div class="modal-head">
       <div
         class="login-choice"
@@ -33,11 +33,20 @@ export default {
   name: "LoginModal",
   data() {
     return {
-      isShowLogin: false
+      isShowLogin: false,
+      pathCount: 0
     };
   },
   components: {
     ModalBody
+  },
+  props: {
+    modalAtTop: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
   },
   methods: {
     clickLogin() {
@@ -49,20 +58,24 @@ export default {
     changeShow(isShow) {
       this.isShowLogin = isShow;
     }
-  }
+  },
+  computed: {}
 };
 </script>
 
 <style scoped>
 .login-modal {
   box-sizing: border-box;
-  margin: 45% auto;
+  margin: 40% auto;
   width: 90%;
   box-shadow: 0 0 10px #ccc;
   border: 1px solid transparent;
   border-radius: 20px;
   padding-top: 15px;
   background-color: rgba(255, 255, 255, 0.8);
+}
+.at-top {
+  margin: 5% auto !important;
 }
 
 .modal-head {
