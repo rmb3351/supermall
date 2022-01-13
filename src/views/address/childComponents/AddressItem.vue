@@ -1,10 +1,13 @@
 <template>
   <div class="item">
     <div class="left">
-      <div class="addr">{{ addrInfo.addr }}</div>
+      <div class="addr">{{ addrInfo[0].addr }}</div>
       <div class="left-botm">
-        <span class="name">{{ addrInfo.name }}</span>
-        <span class="phone">{{ addrInfo.phone }}</span>
+        <span class="name">{{ addrInfo[0].name }}</span>
+        <span class="phone"
+          >{{ addrInfo[0].phone
+          }}<span class="default" v-if="addrInfo[0].default">默认</span></span
+        >
       </div>
     </div>
     <div class="right">
@@ -21,21 +24,23 @@ export default {
   },
   props: {
     addrInfo: {
-      type: Object,
+      type: Array,
       default() {
-        return {};
+        return [];
       }
     }
   },
   methods: {
-    modifyAddr() {}
+    modifyAddr() {
+      this.$router.push(`/address/modAddr/${this.addrInfo[1]}`);
+    }
   }
 };
 </script>
 
 <style scoped>
 .item {
-  margin: 20px;
+  margin: 30px 20px;
   display: flex;
   justify-content: space-between;
 }
@@ -48,15 +53,27 @@ export default {
   font-size: 17px;
 }
 .left .left-botm {
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
-  font-size: 14px;
+  font-size: 15px;
 }
 .left-botm .name {
-  flex: 3;
+  flex: 1;
 }
 .left-botm .phone {
-  flex: 5;
+  flex: 2;
+  display: flex;
+  justify-content: space-between;
+}
+.phone .default {
+  border-radius: 3px;
+  width: 30px;
+  height: 18px;
+  background: var(--color-tint);
+  line-height: 18px;
+  text-align: center;
+  color: #fff;
+  font-size: 12px;
 }
 
 .item .right {

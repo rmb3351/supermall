@@ -10,8 +10,10 @@ import {
   LOGGED_IN,
   LOGGED_OUT,
   NEW_ADDRESS,
+  MOD_ADDRESS,
   ROUTE_CHANGE
 } from "./mutations-types";
+
 import { syncUserInfo } from "../common/utils";
 export default {
   // 用来做方法名时记得加中括号
@@ -62,6 +64,7 @@ export default {
     }
     syncUserInfo(state);
   },
+
   // 登录和登出的相关状态修改
   [LOGGED_IN](state, payload) {
     state.loggedIn = true;
@@ -76,11 +79,43 @@ export default {
     state.userInfo[payload].isLoggedIn = false;
     state.cartList = [];
   },
+
   // 保存新地址信息和修改现有地址信息的操作
+  // 也加入了默认地址的排序首位功能和取消其他地址的默认功能
   [NEW_ADDRESS](state, payload) {
-    payload.id = state.userInfo[state.loggedInUser].addresses.length;
-    state.userInfo[state.loggedInUser].addresses.push(payload);
+    const addresses = state.userInfo[state.loggedInUser].addresses;
+    // 逻辑类似于修改时勾选，还简单点
+    if (payload.default) {
+      addresses.unshift(payload);
+      addresses.forEach((addr, id) => {
+        addr.id = id;
+        if (addr.default && addr.id) {
+          addr.default = false;
+        }
+      });
+    } else {
+      payload.id = addresses.length;
+      addresses.push(payload);
+    }
   },
+  [MOD_ADDRESS](state, payload) {
+    const addresses = state.userInfo[state.loggedInUser].addresses;
+    // 勾选默认且勾选前不是默认
+    if (payload.default && payload.id !== 0) {
+      // 删除这个元素、从头插入、修改id并去除其他默认
+      addresses.splice(payload.id, 1);
+      addresses.unshift(payload);
+      addresses.forEach((addr, id) => {
+        addr.id = id;
+        if (addr.default && addr.id) {
+          addr.default = false;
+        }
+      });
+    } else {
+      addresses[payload.id] = payload;
+    }
+  },
+
   // 记录路由跳转次数，决定是否可以后退
   [ROUTE_CHANGE](state, payload) {
     state.routeChangeCount++;

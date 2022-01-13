@@ -28,7 +28,7 @@ const routes = [
     component: Address,
     children: [
       { path: "newAddr", component: NewAddress },
-      { path: "modAddr", component: ModifyAddress }
+      { path: "modAddr/:aid", props: true, component: ModifyAddress }
     ]
   }
 ];
@@ -49,6 +49,26 @@ router.beforeEach((to, from, next) => {
     } else {
       // 去结算的后面看情况处理
       console.log("页面还在施工中，下次再尝试噢");
+    }
+  } else if (to.path.indexOf("address") !== -1) {
+    // 去地址页，未登录回主页
+    if (!getItem("loggedInUser")) {
+      next("/home");
+    } else if (to.path.indexOf("modAddr") !== -1) {
+      // 登录则验证地址id是否合法
+      const idPattern = /modAddr\/(\d*)/;
+      // 正则捕获aid，只会获取正整数
+      let aid = idPattern.exec(to.path)[1];
+      // 排除第一位不是数字（负数或者乱输）
+      if (aid === "") return;
+      aid *= 1;
+      const user = getItem("loggedInUser");
+      const userInfo = getItem(user);
+      if (aid < userInfo.addresses.length) {
+        next();
+      }
+    } else {
+      next();
     }
   } else {
     next();

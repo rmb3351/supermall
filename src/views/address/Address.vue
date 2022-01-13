@@ -8,7 +8,7 @@
       <address-item
         v-for="(item, index) in addresses"
         :key="index"
-        :addrInfo="item"
+        :addrInfo="[item, index]"
       ></address-item>
       <div class="add-btn" @click="addNewAddress">
         ＋ 新建收货地址

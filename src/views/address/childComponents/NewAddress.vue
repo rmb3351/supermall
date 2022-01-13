@@ -55,7 +55,7 @@
 import BackNavBar from "components/common/navbar/BackNavBar";
 import { setItem } from "common/utils";
 import { mapState } from "vuex";
-import { NEW_ADDRESS } from "@/store/mutations-types";
+import { NEW_ADDRESS, MOD_ADDRESS } from "@/store/mutations-types";
 export default {
   name: "NewAddress",
   components: {
@@ -80,12 +80,21 @@ export default {
       console.log("删除");
     },
     savAddr() {
-      this.$store.commit(NEW_ADDRESS, this.pageInfo);
+      if (this.pageInfo.id !== undefined) {
+        this.$store.commit(MOD_ADDRESS, this.pageInfo);
+      } else {
+        this.$store.commit(NEW_ADDRESS, this.pageInfo);
+      }
       setItem(this.loggedInUser, this.userInfo[this.loggedInUser]);
       this.$router.back();
     },
     focusWhich(e) {
-      const which = e.path[e.path.length - 9].children[1];
+      let which;
+      if (this.pageInfo.id === undefined) {
+        which = e.path[e.path.length - 9].children[1];
+      } else {
+        which = e.path[e.path.length - 10].children[1];
+      }
       which.focus();
     },
     checkHeight() {
@@ -99,7 +108,7 @@ export default {
   computed: {
     ...mapState(["loggedInUser", "userInfo"]),
     diffUI() {
-      return this.pageInfo.name.length === 0
+      return this.$route.path.indexOf("newAddr") !== -1
         ? { title: "新建", navRight: false }
         : { title: "修改", navRight: true };
     }
