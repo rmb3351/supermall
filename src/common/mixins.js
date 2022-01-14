@@ -1,5 +1,7 @@
 // 这个文件用于存放不同vue里的重复代码，到时候直接在vue文件里导入就会自动生效
-import {debounce} from "./utils"
+import { debounce } from "./utils";
+import BackToTop from "components/content/backToTop/BackToTop";
+import { WINDOW_RESIZE, HIDE_TAB_BAR } from "@/store/mutations-types";
 export const itemListenerMixin = {
   // 这个看样子是用不上了
   // data() {
@@ -19,4 +21,72 @@ export const itemListenerMixin = {
       scrollRefresh();
     });
   }
-}
+};
+// 由于主页和详情页里都需要backtotop，所以这里也整个抽取
+export const backToTopMixin = {
+  components: {
+    BackToTop
+  },
+  data() {
+    return {
+      isShowBTT: false
+    };
+  },
+  methods: {
+    bttClick(x, y, time) {
+      // console.log(this.$refs.scroll.scroll);
+      // 这里直接调用方法，可以少加一次.scroll再拿到data里的scroll，体现一波封装思想
+      // 这里的time本来可以给默认值，但是给默认值的话它又不成功，怪事
+      this.$refs.scroll.scrollTo(x, y, time);
+    },
+    bttShow(position) {
+      this.isShowBTT = position.y < -600;
+    }
+  }
+};
+
+export const tabControlMixin = {
+  data() {
+    return {
+      currentTab: "pop"
+    };
+  },
+  methods: {
+    itemClick(index) {
+      switch (index) {
+        case 0:
+          this.currentTab = "pop";
+          break;
+        case 1:
+          this.currentTab = "new";
+          break;
+        case 2:
+          this.currentTab = "sell";
+          break;
+      }
+    }
+  }
+};
+
+// 让底部栏或按键适时隐藏的混入
+export const resetResizeMixin = {
+  data() {
+    return {
+      initialHeight: outerHeight,
+      isCompShow: true
+    };
+  },
+  methods: {
+    resetResize(type) {
+      window.onresize = () => {
+        return (() => {
+          this.isCompShow = this.initialHeight === outerHeight;
+          if (this.buttonName !== undefined) {
+            this.$store.commit(HIDE_TAB_BAR, !this.isCompShow);
+          }
+        })();
+      };
+      this.$store.commit(WINDOW_RESIZE, type);
+    }
+  }
+};

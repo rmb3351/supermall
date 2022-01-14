@@ -1,18 +1,26 @@
 <template>
   <div class="cart-bottom-bar">
-    <div>
-      <check-button
-        :is-checked="cartCheckedAll"
-        class="check-button"
-        @click.native="checkAll"
-      >
-      </check-button>
-      <div>全选</div>
+    <slot name="left">
+      <div>
+        <check-button
+          :is-checked="cartCheckedAll"
+          class="check-button"
+          @click.native="checkAll"
+        >
+        </check-button>
+        <div>全选</div>
+      </div>
+    </slot>
+    <div class="show-price">
+      <slot name="center">
+        <div>合计：￥ {{ cartPrice }}</div>
+      </slot>
     </div>
-    <div class="show-price">合计：￥ {{ cartPrice }}</div>
-    <span class="go-buy" @click="pay" v-show="!isManaging"
-      >去结算({{ checkedCount }})</span
-    >
+    <slot name="right">
+      <span class="go-buy" @click="pay" v-show="!isManaging"
+        >去结算({{ checkedCount }})</span
+      >
+    </slot>
     <span class="go-bye" @click="checkForDelete" v-show="isManaging">移除</span>
     <div class="check-for-delete" v-show="isChecking">
       <div>
@@ -109,8 +117,9 @@ export default {
   flex: 1;
   margin-left: 10px;
 }
-.show-count {
-  height: 40px;
+.go-bye,
+.go-buy {
+  height: 100%;
   width: 90px;
   background: crimson;
   color: #eee;

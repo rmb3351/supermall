@@ -13,7 +13,10 @@ const state = {
   // 方便判断登录状态和登录用户
   loggedIn: false,
   loggedInUser: "",
-  routeChangeCount: 0
+  routeChangeCount: 0,
+  // 为了自动初始化，把type设为空让两个type都不匹配
+  resizeType: "",
+  hideTabBar: false
 };
 
 const store = new Vuex.Store({

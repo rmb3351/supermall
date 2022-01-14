@@ -1,17 +1,22 @@
 <template>
   <div class="item">
     <div class="left">
-      <div class="addr">{{ addrInfo[0].addr }}</div>
+      <div class="addr">{{ showingInfo.addr }}</div>
       <div class="left-botm">
-        <span class="name">{{ addrInfo[0].name }}</span>
+        <span class="name">{{ showingInfo.name }}</span>
         <span class="phone"
-          >{{ addrInfo[0].phone
-          }}<span class="default" v-if="addrInfo[0].default">默认</span></span
+          >{{ showingInfo.phone
+          }}<span class="default" v-if="showingInfo.default">默认</span></span
         >
       </div>
     </div>
     <div class="right">
-      <span class="modify" @click="modifyAddr">修改</span>
+      <slot name="right">
+        <span
+          class="modify iconfont icon-xiugai"
+          @click.stop="modifyAddr"
+        ></span>
+      </slot>
     </div>
   </div>
 </template>
@@ -28,11 +33,26 @@ export default {
       default() {
         return [];
       }
+    },
+    tradeAddr: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   },
   methods: {
     modifyAddr() {
       this.$router.push(`/address/modAddr/${this.addrInfo[1]}`);
+    }
+  },
+  computed: {
+    showingInfo() {
+      if (this.addrInfo.length !== 0) {
+        return this.addrInfo[0];
+      } else {
+        return this.tradeAddr;
+      }
     }
   }
 };

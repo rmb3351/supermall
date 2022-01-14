@@ -1,9 +1,13 @@
 <template>
   <div id="shop-item">
-    <check-button
-      :is-checked="purchase.checked"
-      @click.native="ckbClick"
-    ></check-button>
+    <div class="item-selector">
+      <slot name="left">
+        <check-button
+          :is-checked="purchase.checked"
+          @click.native="ckbClick"
+        ></check-button>
+      </slot>
+    </div>
     <div class="item-img">
       <img :src="purchase.image" alt="商品图片" />
     </div>
@@ -180,7 +184,7 @@ export default {
   position: relative;
   width: 50px;
   height: 20px;
-  border: 3px solid rgb(220, 20, 60);
+  border: 2px solid #ccc;
   text-align: center;
   vertical-align: top;
   line-height: 23px;

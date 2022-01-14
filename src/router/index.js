@@ -12,6 +12,7 @@ const Address = () => import("../views/address/Address");
 const NewAddress = () => import("../views/address/childComponents/NewAddress");
 const ModifyAddress = () =>
   import("../views/address/childComponents/ModifyAddress");
+const Trade = () => import("../views/trade/Trade");
 
 Vue.use(VueRouter);
 const routes = [
@@ -24,12 +25,23 @@ const routes = [
   { path: "/detail/:iid", component: Detail },
   { path: "/login", component: Login },
   {
-    path: "/address",
+    path: "/address/",
     component: Address,
+    // 函数连续解构写法
+    props({ query: { type } }) {
+      return { type };
+    },
     children: [
       { path: "newAddr", component: NewAddress },
       { path: "modAddr/:aid", props: true, component: ModifyAddress }
     ]
+  },
+  {
+    path: "/trade",
+    component: Trade,
+    props({ query: { id } }) {
+      return { id };
+    }
   }
 ];
 const router = new VueRouter({

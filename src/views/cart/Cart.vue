@@ -9,7 +9,10 @@
     <scroll class="wrapper" ref="scroll" :probetype="3">
       <cart-list class="cart-list"></cart-list>
     </scroll>
-    <cart-bottom-bar :isManaging="isManaging"></cart-bottom-bar>
+    <cart-bottom-bar
+      :isManaging="isManaging"
+      v-show="isCompShow"
+    ></cart-bottom-bar>
   </div>
 </template>
 
@@ -23,8 +26,7 @@ import CartBottomBar from "./childComponents/CartBottomBar.vue";
 //mapgetters是一个把getters里的函数映射到计算属性的辅助函数
 import { mapGetters } from "vuex";
 
-import { setItem } from "common/utils";
-
+import { resetResizeMixin } from "common/mixins";
 export default {
   name: "Cart",
   data() {
@@ -42,6 +44,7 @@ export default {
     Scroll,
     CartBottomBar
   },
+  mixins: [resetResizeMixin],
   computed: {
     // mapgetters函数的两种用法:1.直接按原名映射过来，在参数里放数组，数组里放每个函数名的字符串就行
     // ...mapGetters(["cartLength","cart"])
@@ -58,8 +61,8 @@ export default {
     }
   },
   activated() {
-    // console.log("activated");
     this.$refs.scroll.scrollRefresh();
+    this.resetResize("cart");
   }
 };
 </script>
@@ -69,8 +72,10 @@ export default {
   height: 100vh;
 }
 .navbar {
+  position: relative;
   background: var(--color-tint);
   color: #fff;
+  z-index: 20;
 }
 .navbar .btn-top-right {
   background-color: transparent;
@@ -81,7 +86,7 @@ export default {
 }
 /* 这里用calc计算死都不对，只能照搬主页的绝对定位的方法来用了 */
 .wrapper {
-  overflow: hidden;
+  /* overflow: hidden; */
   /* height: 200px; */
   /* 位置定死，让它自动拉伸匹配除了标题栏和导航栏的剩余部分 */
   position: absolute;

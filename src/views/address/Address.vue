@@ -9,6 +9,7 @@
         v-for="(item, index) in addresses"
         :key="index"
         :addrInfo="[item, index]"
+        @click.native="chooseAddr(index)"
       ></address-item>
       <div class="add-btn" @click="addNewAddress">
         ＋ 新建收货地址
@@ -26,6 +27,7 @@ export default {
   data() {
     return {};
   },
+  props: ["type"],
   components: {
     BackNavBar,
     AddressItem
@@ -33,6 +35,11 @@ export default {
   methods: {
     addNewAddress() {
       this.$router.push("/address/newAddr");
+    },
+    chooseAddr(id) {
+      if (this.type === "choose") {
+        this.$router.push({ path: "/trade", query: { id } });
+      }
     }
   },
   computed: {

@@ -16,6 +16,11 @@ export const LOGGED_OUT = "logged_out";
 // 地址相关
 export const NEW_ADDRESS = "new_address";
 export const MOD_ADDRESS = "mod_address";
+export const DEL_ADDRESS = "del_address";
 
 // 路由跳转
 export const ROUTE_CHANGE = "route_change";
+
+// 屏幕适配相关
+export const WINDOW_RESIZE = "window_resize";
+export const HIDE_TAB_BAR = "hide_tab-bar";

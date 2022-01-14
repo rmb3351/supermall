@@ -1,5 +1,5 @@
 <template>
-  <div class="page-content" @click="checkHeight">
+  <div class="page-content">
     <back-nav-bar class="gray">
       <div slot="left">
         <div class="left-btn">
@@ -47,20 +47,22 @@
         <input class="right-check" type="checkbox" v-model="pageInfo.default" />
       </div>
     </div>
-    <div class="save" @click="savAddr" v-show="saveShow">保存</div>
+    <div class="save" @click="savAddr" v-show="isCompShow">保存</div>
   </div>
 </template>
 
 <script>
 import BackNavBar from "components/common/navbar/BackNavBar";
 import { setItem } from "common/utils";
+import { resetResizeMixin } from "common/mixins";
 import { mapState } from "vuex";
-import { NEW_ADDRESS, MOD_ADDRESS } from "@/store/mutations-types";
+import { NEW_ADDRESS, MOD_ADDRESS, DEL_ADDRESS } from "@/store/mutations-types";
 export default {
   name: "NewAddress",
   components: {
     BackNavBar
   },
+  mixins: [resetResizeMixin],
   props: {
     pageInfo: {
       type: Object,
@@ -71,13 +73,16 @@ export default {
   },
   data() {
     return {
-      initialHeight: outerHeight,
-      saveShow: true
+      initialHeight: outerHeight
     };
   },
   methods: {
     delAddr() {
-      console.log("删除");
+      // 先跳转再删除，避免显示bug或获取数据出错，且不允许返回
+      this.$router.replace("/address");
+      this.$store.commit(DEL_ADDRESS, this.pageInfo);
+      setItem(this.loggedInUser, this.userInfo[this.loggedInUser]);
+      this.$router.back();
     },
     savAddr() {
       if (this.pageInfo.id !== undefined) {
@@ -88,6 +93,8 @@ export default {
       setItem(this.loggedInUser, this.userInfo[this.loggedInUser]);
       this.$router.back();
     },
+
+    // 辅助获取输入框焦点的功能
     focusWhich(e) {
       let which;
       if (this.pageInfo.id === undefined) {
@@ -96,13 +103,6 @@ export default {
         which = e.path[e.path.length - 10].children[1];
       }
       which.focus();
-    },
-    checkHeight() {
-      // outerHeight更新有延时，watch和computed也监听不到，只能用蠢办法
-      setTimeout(this.compareHeights, 200);
-    },
-    compareHeights() {
-      this.saveShow = this.initialHeight === outerHeight;
     }
   },
   computed: {
@@ -112,6 +112,9 @@ export default {
         ? { title: "新建", navRight: false }
         : { title: "修改", navRight: true };
     }
+  },
+  mounted() {
+    this.resetResize("addr");
   }
 };
 </script>

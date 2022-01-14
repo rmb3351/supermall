@@ -15,21 +15,14 @@
         </svg>
       </slot>
       <div class="login-info left">
-        <slot name="user-nickname">
+        <span name="user-nickname" v-show="isIn">
           <div>{{ uname }}</div>
-        </slot>
-        <div class="phone">
-          <span>
-            <svg data-v-735ff1be="" fill="#fff" class="icon-mobile">
-              <use
-                data-v-735ff1be=""
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                xlink:href="#mobile"
-              ></use>
-            </svg>
-          </span>
-          <slot name="user-phone">暂无绑定手机号</slot>
+        </span>
+        <div class="addr" v-show="isIn">
+          <span class="iconfont icon-dizhi"> </span>
+          <span class="addr-text">管理收货地址</span>
         </div>
+        <div class="tip" v-show="!isIn">登录/注册</div>
       </div>
       <svg data-v-735ff1be="" fill="#fff" class="arrow-svg right">
         <use
@@ -52,8 +45,7 @@ export default {
       user: "loggedInUser"
     }),
     uname() {
-      if (this.isIn) return this.user;
-      return "登录/注册";
+      return this.user;
     }
   },
   methods: {
@@ -90,20 +82,18 @@ export default {
   font-size: 18px;
 }
 
-#user-info .login-info .phone {
-  position: relative;
-  font-size: 13px;
+#user-info .login-info .addr {
   margin-top: 6px;
-  margin-left: 15px;
+  font-size: 13px;
   font-weight: 300;
 }
-#user-info .login-info .phone .icon-mobile {
-  position: absolute;
-  left: -15px;
-  top: -2px;
-  width: 12px;
-  height: 18px;
+.addr .addr-text {
+  margin-left: 2px;
 }
+.login-info .tip {
+  margin-top: 16%;
+}
+
 .left {
   float: left;
 }

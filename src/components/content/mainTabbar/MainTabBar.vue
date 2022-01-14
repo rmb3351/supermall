@@ -48,6 +48,7 @@ import TabBarItem from "components/common/tabbar/TabBarItem";
 
 import { getItem } from "common/utils";
 import { LOGGED_IN, ROUTE_CHANGE } from "@/store/mutations-types";
+import { mapState } from "vuex";
 export default {
   name: "MainTabBar",
   components: {
@@ -56,7 +57,8 @@ export default {
   },
   data() {
     return {
-      excludePaths: ["/address", "/login"]
+      excludePaths: ["/address", "/login", "/trade"],
+      initialHeight: outerHeight
     };
   },
   mounted() {
@@ -70,12 +72,13 @@ export default {
     }
   },
   computed: {
+    ...mapState({ isHide: "hideTabBar" }),
     showCondition() {
       // path不包含所有excludePaths中的路径才显示
-      const flag = this.excludePaths.every(ele => {
+      const flagA = this.excludePaths.every(ele => {
         return this.$route.path.indexOf(ele) === -1;
       });
-      return flag;
+      return !this.isHide && flagA;
     }
   },
   watch: {
