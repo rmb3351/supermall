@@ -2,7 +2,7 @@
 
 ## 同步项目已经部署上 vercel 并成功获取接口数据
 
-[线上项目地址](https://private-supermall-rmb3351.vercel.app)
+线上项目地址:<https://private-supermall-rmb3351.vercel.app>
 
 ## Project setup
 
