@@ -25,13 +25,13 @@ export default {
   name: "DetailGoodsInfo",
   props: {
     detailInfo: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   data() {
     return {
       counter: 0,
-      imagesLength: 0,
+      imagesLength: 0
     };
   },
   methods: {
@@ -41,15 +41,15 @@ export default {
       if (++this.counter == this.imagesLength) {
         this.$emit("imageLoad");
       }
-    },
+    }
   },
   // watch的用法是监听数据的改变，里面的数据只要改变，就会执行它对应的函数
   watch: {
     detailInfo() {
       // 获取图片的个数
       this.imagesLength = this.detailInfo.detailImage[0].list.length;
-    },
-  },
+    }
+  }
 };
 </script>
 

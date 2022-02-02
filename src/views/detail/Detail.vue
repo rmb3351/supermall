@@ -6,6 +6,7 @@
       @NavBarClick="navBarClick"
       ref="navbar"
     ></detail-nav-bar>
+
     <scroll class="content" ref="scroll" :probetype="3" @scroll="contentScroll">
       <div>
         <detail-swiper :topImages="topImages"></detail-swiper>
@@ -55,6 +56,7 @@ import DetailShopInfo from "./childComponents/DetailShopInfo.vue";
 import DetailGoodsInfo from "./childComponents/DetailGoodsInfo.vue";
 import DetailGoodsParam from "./childComponents/DetailGoodsParam.vue";
 import DetailCommentInfo from "./childComponents/DetailCommentInfo.vue";
+import DetailBottomBar from "./childComponents/DetailBottomBar.vue";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
@@ -76,6 +78,7 @@ export default {
     DetailGoodsInfo,
     DetailGoodsParam,
     DetailCommentInfo,
+    DetailBottomBar,
     Scroll,
     GoodsList
   },
@@ -230,8 +233,9 @@ export default {
 }
 .content {
   /* 这里用计算高度和视口高度都不行，滚动有问题，怪事
-  加了更多数据以后又行了，看来还是高度问题 */
-  height: calc(100% - 44px);
+  加了更多数据以后又行了，看来还是高度问题
+  这个计算公式很有问题，好像不能识别-几-几或者-（几+几）这种格式，会出各种BUG */
+  height: calc(100% - 95px);
   /* height: 10px; */
 }
 .detail-navbar {

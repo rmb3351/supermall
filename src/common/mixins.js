@@ -10,7 +10,7 @@ export const itemListenerMixin = {
   //   }
   // },
   mounted() {
-    // 用常量接收防抖函数
+    // 用常量接收防抖函数，如果直接匿名调用没有常量来接收，那么防抖函数无用
     const scrollRefresh = debounce(this.$refs.scroll.scrollRefresh, 100);
     // 每次开始就监听图片加载，每次加载完毕都重新刷新滚动条以适配图片加载后的新高度
     this.$bus.$on("ImageLoad", () => {

@@ -21,6 +21,7 @@ export class Goods{
   // 类的构造器格式
   constructor(itemInfo,columns,services){
     this.title=itemInfo.title
+    // 这里的desc和realPrice都是在购物车里展示才用到的
     this.desc=itemInfo.desc
     this.newPrice=itemInfo.price
     this.oldPrice=itemInfo.oldPrice

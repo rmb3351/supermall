@@ -51,6 +51,14 @@ export default {
   components: {
     CheckButton
   },
+  props: {
+    isManaging: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       "cart",
@@ -127,5 +135,49 @@ export default {
   padding-top: 10px;
   text-align: center;
   font-size: 14px;
+}
+.check-for-delete {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-90%);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(248, 249, 249, 0.7);
+  z-index: 10;
+  line-height: 100vh;
+}
+.check-for-delete div {
+  margin: 45% auto 35%;
+  width: 60%;
+  height: 20%;
+  border-radius: 3%;
+  background-color: rgb(220, 20, 60);
+}
+.check-for-delete span {
+  position: absolute;
+  top: -1%;
+  left: 51%;
+  transform: translateX(-50%);
+  color: #eee;
+}
+.check-for-delete button {
+  display: inline-block;
+  position: absolute;
+  top: 55%;
+  outline: 0;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  height: 30px;
+  background-color: transparent;
+  padding: 0 4px;
+  color: #eee;
+}
+.check-for-delete .btn_left {
+  left: 33%;
+}
+.check-for-delete .btn_right {
+  left: 55%;
 }
 </style>

@@ -19,12 +19,12 @@
       <div class="info-bottom">
         <div class="item-price left">¥{{ purchase.price }}</div>
         <div class="item-count right">
-          <button @click="minusCartCount">-</button>
+          <button @click="minusCartCount">－</button>
           <span class="item-num" @click="showModifier"
             >{{ purchase.count }}
             <input ref="modifier" type="input" v-show="isModifying"
           /></span>
-          <button @click="plusCartCount">+</button>
+          <button @click="plusCartCount">＋</button>
         </div>
       </div>
     </div>
@@ -184,6 +184,7 @@ export default {
 .item-count button {
   margin: 0 5px;
   border: 0;
+  outline: 0;
   background: none;
   font-size: 20px;
 }

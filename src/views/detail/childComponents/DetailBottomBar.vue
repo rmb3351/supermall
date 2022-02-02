@@ -22,10 +22,10 @@
     </div>
     <div class="add-num" v-if="isChoosing">
       <button @click="choosingCount > 1 ? --choosingCount : choosingCount">
-        -
+        －
       </button>
       {{ choosingCount }}
-      <button @click="choosingCount++">+</button>
+      <button @click="choosingCount++">＋</button>
       <button @click="addToCart">确定</button>
       <button @click="isChoosing = false">取消</button>
     </div>
@@ -125,19 +125,21 @@ export default {
 .add-num {
   box-sizing: border-box;
   position: absolute;
-  left: 48%;
-  top: -30px;
-  width: 45%;
-  height: 30px;
+  left: 25%;
+  top: -40px;
+  width: 65%;
+  height: 40px;
   background-color: rgb(248, 249, 249);
   border: 3px solid rgb(255, 232, 23);
   text-align: center;
-  line-height: 30px;
-  font-size: 15px;
+  line-height: 40px;
+  font-size: 20px;
 }
 .add-num button {
-  margin: 0 8px;
+  width: 20%;
+  background-color: transparent;
   border: 0;
-  font-size: 15px;
+  outline: 0;
+  font-size: 20px;
 }
 </style>

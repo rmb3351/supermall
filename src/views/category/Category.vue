@@ -1,139 +1,149 @@
 <template>
   <div class="wrapper" ref="wrapper">
-    <ul class="content">
-      <li>数据1</li>
-      <li>数据2</li>
-      <li>数据3</li>
-      <li>数据4</li>
-      <li>数据5</li>
-      <li>数据6</li>
-      <li>数据7</li>
-      <li>数据8</li>
-      <li>数据9</li>
-      <li>数据10</li>
-      <li>数据11</li>
-      <li>数据12</li>
-      <li>数据13</li>
-      <li>数据14</li>
-      <li>数据15</li>
-      <li>数据16</li>
-      <li>数据17</li>
-      <li>数据18</li>
-      <li>数据19</li>
-      <li>数据20</li>
-      <li>数据21</li>
-      <li>数据22</li>
-      <li>数据23</li>
-      <li>数据24</li>
-      <li>数据25</li>
-      <li>数据26</li>
-      <li>数据27</li>
-      <li>数据28</li>
-      <li>数据29</li>
-      <li>数据30</li>
-      <li>数据31</li>
-      <li>数据32</li>
-      <li>数据33</li>
-      <li>数据34</li>
-      <li>数据35</li>
-      <li>数据36</li>
-      <li>数据37</li>
-      <li>数据38</li>
-      <li>数据39</li>
-      <li>数据40</li>
-      <li>数据41</li>
-      <li>数据42</li>
-      <li>数据43</li>
-      <li>数据44</li>
-      <li>数据45</li>
-      <li>数据46</li>
-      <li>数据47</li>
-      <li>数据48</li>
-      <li>数据49</li>
-      <li>数据50</li>
-      <li>数据51</li>
-      <li>数据52</li>
-      <li>数据53</li>
-      <li>数据54</li>
-      <li>数据55</li>
-      <li>数据56</li>
-      <li>数据57</li>
-      <li>数据58</li>
-      <li>数据59</li>
-      <li>数据60</li>
-      <li>数据61</li>
-      <li>数据62</li>
-      <li>数据63</li>
-      <li>数据64</li>
-      <li>数据65</li>
-      <li>数据66</li>
-      <li>数据67</li>
-      <li>数据68</li>
-      <li>数据69</li>
-      <li>数据70</li>
-      <li>数据71</li>
-      <li>数据72</li>
-      <li>数据73</li>
-      <li>数据74</li>
-      <li>数据75</li>
-      <li>数据76</li>
-      <li>数据77</li>
-      <li>数据78</li>
-      <li>数据79</li>
-      <li>数据80</li>
-      <li>数据81</li>
-      <li>数据82</li>
-      <li>数据83</li>
-      <li>数据84</li>
-      <li>数据85</li>
-      <li>数据86</li>
-      <li>数据87</li>
-      <li>数据88</li>
-      <li>数据89</li>
-      <li>数据90</li>
-      <li>数据91</li>
-      <li>数据92</li>
-      <li>数据93</li>
-      <li>数据94</li>
-      <li>数据95</li>
-      <li>数据96</li>
-      <li>数据97</li>
-      <li>数据98</li>
-      <li>数据99</li>
-      <li>数据100</li>
-    </ul>
+    <nav-bar class="nav-bar">
+      <div slot="center">商品分类</div>
+    </nav-bar>
+    <div class="content">
+      <scroll id="tab-content" ref="tab_scroll">
+        <!-- 监听到某个item被点击后，发送网络请求，获取item下各个数据 -->
+        <tab-menu :categories="categories" @selectItem="getSubCat"></tab-menu>
+      </scroll>
+
+      <scroll ref="scroll">
+        <div>
+          <tab-content-category
+            :subCategories="subCategories"
+          ></tab-content-category>
+        </div>
+        <tab-control
+          :titles="['综合', '新品', '销量']"
+          @tabClick="tabClick"
+          ref="tab_control"
+        ></tab-control>
+        <tab-content-details
+          :categoryDetails="categoryDetails"
+        ></tab-content-details>
+      </scroll>
+    </div>
   </div>
 </template>
 
 <script>
-import BetterScroll from "better-scroll";
+import Scroll from "components/common/scroll/Scroll";
+import NavBar from "components/common/navbar/NavBar";
+import TabControl from "components/content/tabControl/TabControl";
+
+import TabMenu from "./childComponents/TabMenu.vue";
+import TabContentCategory from "./childComponents/TabContentCategory.vue";
+import TabContentDetails from "./childComponents/TabContentDetails.vue";
+
+import {
+  getCategory,
+  getSubCategory,
+  getCategoryDetail
+} from "network/category";
+import { tabControlMixin } from "common/mixins";
+import { debounce } from "common/utils";
+
 export default {
   name: "Category",
+  components: {
+    Scroll,
+    NavBar,
+    TabControl,
+    TabMenu,
+    TabContentCategory,
+    TabContentDetails
+  },
+  mixins: [tabControlMixin],
   data() {
     return {
       scroll: null,
+      currentIndex: -1,
+      // 所有分类
+      categories: [],
+      // 所有分类数据
+      categoryDatas: []
     };
   },
-  // created:在模板渲染成html前调用，即通常初始化某些属性值，然后再渲染成视图。
-  // mounted:在模板渲染成html后调用，通常是初始化页面完成后，再对html的dom节点进行一些需要的操作。
-  mounted() {
-    this.scroll = new BetterScroll(document.querySelector(".wrapper"), {
-      // movable: true,
-      // zoom: true,
-      // click:true,
-
-      // pullUpLoad:true,
-      // 血淋淋的教训，better-scroll默认不受鼠标滚轮的控制，把这玩意设定为true才行
-      // 否则只能以鼠标拖动来操作，错的不是你
-      mouseWheel:true
-    });
-    // console.log(this.scroll);
+  methods: {
+    // 获取分类总数据
+    getCat() {
+      getCategory().then(res => {
+        this.categories = res.data.category.list;
+        this.categories.forEach((e, i) => {
+          // 用数组的响应式方法修改数组，否则vue监听不到页面就不更新了
+          // 细分分类数据的每一项，顺序调用，在不同方法内获取
+          this.categoryDatas.push({
+            subCategories: {},
+            categoryDetails: {
+              pop: [],
+              sell: [],
+              new: []
+            }
+          });
+        });
+        this.getSubCat(0);
+      });
+    },
+    // 获取子分类的数据
+    getSubCat(index) {
+      this.currentIndex = index;
+      const MAIT_KET = this.categories[index].maitKey;
+      getSubCategory(MAIT_KET).then(res => {
+        this.categoryDatas[index].subCategories = res.data;
+        this.getCatDet("pop");
+        this.getCatDet("sell");
+        this.getCatDet("new");
+        this.$refs.scroll.scrollRefresh();
+        this.$refs.tab_scroll.scrollRefresh();
+      });
+    },
+    // 获取分类的细数据
+    getCatDet(type) {
+      const MINI_WALL_KEY = this.categories[this.currentIndex].miniWallkey;
+      getCategoryDetail(MINI_WALL_KEY, type).then(res => {
+        this.$set(
+          this.categoryDatas[this.currentIndex].categoryDetails,
+          type,
+          res
+        );
+      });
+    },
+    tabClick(index) {
+      this.itemClick(index);
+      this.$refs.tab_control.tabCurrentIndex = index;
+    }
   },
+  computed: {
+    subCategories() {
+      if (this.currentIndex === -1) return {};
+      return this.categoryDatas[this.currentIndex].subCategories;
+    },
+    categoryDetails() {
+      if (this.currentIndex === -1) return [];
+      return this.categoryDatas[this.currentIndex].categoryDetails[
+        this.currentTab
+      ];
+    }
+  },
+  created() {
+    this.getCat();
+  },
+  mounted() {
+    this.$refs.scroll.scrollRefresh();
+    this.$refs.tab_scroll.scrollRefresh();
+    // 和主页逻辑一样，监听图片加载防抖刷新
+    this.$bus.$on("ImageLoad", debounce(this.$refs.scroll.scrollRefresh, 200));
+  },
+  updated() {
+    this.$refs.scroll.scrollRefresh();
+    this.$refs.tab_scroll.scrollRefresh();
+  }
 };
 </script>
 
 <style scoped>
-/* 直接用样式实现原生滚动的部分位置滚动，这里不建议用这个方法，因为据说实机操作滚动会很卡 */
 .wrapper {
   height: 100vh;
 }

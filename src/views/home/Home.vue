@@ -57,7 +57,7 @@ import Scroll from "components/common/scroll/Scroll";
 
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
-import BackToTop from "components/content/backToTop/BackToTop";
+// import BackToTop from "components/content/backToTop/BackToTop";
 
 // 这里由于不是default所以要用大括号把函数包含起来
 import { getHomeMultidata, getHomeGoods } from "network/home";
@@ -71,7 +71,11 @@ import FeatureView from "./childComponents/FeatureView.vue";
 // 导入放到utils里的防抖函数,导入的是函数，而且导出没有default，记得大括号
 import { debounce } from "common/utils";
 // 导入要混入的常量
-import { itemListenerMixin } from "common/mixins";
+import {
+  itemListenerMixin,
+  backToTopMixin,
+  tabControlMixin
+} from "common/mixins";
 
 export default {
   name: "Home",
@@ -80,13 +84,12 @@ export default {
     Scroll,
     TabControl,
     GoodsList,
-    BackToTop,
     HomeSwiper,
     RecommendView,
-    FeatureView,
+    FeatureView
   },
   // 混入内容放在和data等内容并列的位置
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backToTopMixin, tabControlMixin],
   data() {
     return {
       //  用自己定义的的data属性把create里请求的网络数据保存起来，否则create生命周期结束了会失去数据
@@ -95,14 +98,12 @@ export default {
       goods: {
         // 这里用来存储商品信息，page属性主要是用于将数据列表切片按片显示
         // 这样可以方便实现点击不同分类下滑加载到不同位置的效果
-        pop: { page: 0, list: [] },
-        new: { page: 0, list: [] },
-        sell: { page: 0, list: [] },
+        pop: { page: 0, list: [], currentY: 0 },
+        new: { page: 0, list: [], currentY: 0 },
+        sell: { page: 0, list: [], currentY: 0 }
       },
-      // 默认展示pop标签下的内容
-      currentTab: "pop",
-      // 默认情况下不展示backtotop
-      isShowBTT: false,
+      // 默认情况下不展示backtotop,这里也抽取到mixins里面了
+      // isShowBTT: false,
       // tabcontrol吸顶的高度,在swiper加载好后获取,但是不懂为啥，第一次获取的高度不准确，干脆写死
       tcOffsetTop: 536,
       // 是否吸顶，在获取滚动条位置和吸顶的高度后判断
@@ -110,7 +111,7 @@ export default {
       // 保存上次离开home页面时的y坐标位置
       lastY: 0,
       // 记录有没有上一次，如果没有，则activated里不用跳转到上一次Y的位置
-      lastExistance: false,
+      lastExistance: false
     };
   },
   // 生命周期函数记得是状态词而不是动词，这里写错是不会报错的，非常难找，一定要注意
@@ -138,19 +139,24 @@ export default {
   activated() {
     // 当是重回页面时直接飞到上次的位置，一开始不执行
     if (this.lastExistance) {
-      this.$refs.scroll.scrollTo(0, this.lastY, 0);
-      // 刷新一次防止无法滚动，但是实测刷新失败
-      this.$refs.scroll.mouseWheel = true;
+      // this.$refs.scroll.mouseWheel = true;
+      // 先刷新一次防止无法滚动，再回到原来的位置，顺序颠倒的话可能出现滚回顶点的bug
       this.$refs.scroll.scrollRefresh();
       this.lastExistance = false;
+      this.$refs.scroll.scrollTo(0, this.lastY, 0);
+      // console.log("回到记录的位置");
+      // console.log(this.lastY);
+      // console.log(this.lastExistance);
     }
   },
   deactivated() {
     // 离开页面前保存当前y坐标
-    this.lastY = this.$refs.scroll.getScrollY;
+    this.lastY = this.$refs.scroll.getScrollY();
     // 离开过这个页面才会有上一次
     this.lastExistance = true;
     // 在离开页面时解除绑定这个防抖函数的监听
+    // console.log(this.lastY);
+    // console.log(this.lastExistance);
     this.$bus.$off("ImageLoad", () => {
       debounce(this.$refs.scroll.scrollRefresh, 100);
     });
@@ -160,8 +166,8 @@ export default {
     // home自带的方法
     getHomeMultidata() {
       // 导入进来的方法，获取home.js里的方法请求网络数据
-      getHomeMultidata().then((res) => {
-        console.log(res);
+      getHomeMultidata().then(res => {
+        // console.log(res);
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
       });
@@ -169,9 +175,9 @@ export default {
     getHomeGoods(type) {
       // 每次申请在原页数基础上+1存入变量，待会作为参数传入导入的getHomeGoods函数中
       const page = this.goods[type].page + 1;
-      getHomeGoods(type, page).then((res) => {
+      getHomeGoods(type, page).then(res => {
         // 理清关系：goods[type]指的是pop、new、sell对应的对象，里面有page和list两个属性
-        // 这里的...意思是在原有基础上加入之后参数（这里是res.data.list）里的所有元素
+        // 这里的...意思是在原有基础上加入之后参数（这里是res.data.list）里的所有新的元素
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
         // console.log(this.goods[type].list[0].image);
@@ -180,29 +186,34 @@ export default {
       });
     },
     tabClick(index) {
-      switch (index) {
-        case 0:
-          this.currentTab = "pop";
-          break;
-        case 1:
-          this.currentTab = "new";
-          break;
-        case 2:
-          this.currentTab = "sell";
-          break;
+      // 当tab被点击时，首先记录当前tab下scroll的y坐标
+      this.goods[this.currentTab].currentY = this.$refs.scroll.getScrollY();
+      this.itemClick(index);
+      // 如果点击tab的时候还没滚到offsetTop，直接让他滚到tabclick的offsetTop
+      if (-this.goods[this.currentTab].currentY <= this.tcOffsetTop) {
+        // 由于offsetTop是正的，所以滚到这里的参数要加-
+        this.$refs.scroll.scrollTo(0, -this.tcOffsetTop, 0);
+        this.goods[this.currentTab].currentY = this.tcOffsetTop;
+        // 否则让他滚到上次记录好的y的位置
+      } else {
+        // 而这里currentY直接是获取的y，直接是负的，所以这里不加-号
+        this.$refs.scroll.scrollTo(0, this.goods[this.currentTab].currentY, 0);
       }
       // 记得在这里改两个tabcontrol的currentIndex，让它们统一
-      this.$refs.tabcontrol2.currentIndex = index;
-      this.$refs.tabcontrol1.currentIndex = index;
+      this.$refs.tabcontrol2.tabCurrentIndex = index;
+      this.$refs.tabcontrol1.tabCurrentIndex = index;
     },
-    bttClick(x, y, time) {
-      // 这里直接调用方法，可以少加一次.scroll再拿到data里的scroll，体现一波封装思想
-      // 这里的time本来可以给默认值，但是给默认值的话它又不成功，怪事
-      this.$refs.scroll.scrollTo(x, y, time);
-    },
+    // bttClick(x, y, time) {
+    //   // 这里直接调用方法，可以少加一次.scroll再拿到data里的scroll，体现一波封装思想
+    //   // 这里的time本来可以给默认值，但是给默认值的话它又不成功，怪事
+    //   this.$refs.scroll.scrollTo(x, y, time);
+    // },
     getPosition(position) {
       // console.log(position);
-      this.isShowBTT = position.y < -600;
+      // 这句话不能单独抽取，抽取的判断只会精确到函数，同名函数会被替代，不会进来检查函数里语句是否相同
+      // this.isShowBTT = position.y < -600;
+      // 所以干脆把这句话封装成函数，这样就可以抽取了
+      this.bttShow(position);
       // 想解决回滚问题，解决失败
       // if (position.y > -180) {
       //   // console.log();
@@ -218,24 +229,29 @@ export default {
     },
     loadMore() {
       // 由于方法已经封装完毕，所以可以直接使用
-      this.getHomeGoods(this.currentTab);
-      this.$refs.scroll.finishPullUp();
-    },
+      // this.getHomeGoods(this.currentTab);
+      // 因为懒加载后会有下拉加载更多时别的标签下出现大段空白无法正常加载的bug
+      // 所以这里全部重新加载数据
+      this.getHomeGoods("pop");
+      this.getHomeGoods("new");
+      this.getHomeGoods("sell");
+      // this.$refs.scroll.finishPullUp();
+    }
     // getTcOffsetTop() {
     //   // 获取了tabcontrol了以后还需要用$el才能获取它的属性
     //   // this.tcOffsetTop = this.$refs.tabcontrol2.$el.offsetTop;
     //   // console.log(this.tcOffsetTop)
     // },
-  },
+  }
 };
 </script>
 
-//scoped是指作用域，即里面的所有CSS代码只对本文件内生效，如果不加，就会对其他文件也生效 
+//scoped是指作用域，即里面的所有CSS代码只对本文件内生效，如果不加，就会对其他文件也生效
 <style scoped>
 #home {
   /* 为了不让其余内容被navbar遮挡，所以默认有个距离页面顶部44px的距离 */
-  padding-top: 44px;
   position: relative;
+  padding-top: 44px;
   /* vh指的是Viewport Height（视口高度）前面的数字代表所占的百分比
   视口比例长度定义了相对于视口的长度大小，这是文档的可见部分。 */
   height: 100vh;
@@ -261,8 +277,8 @@ export default {
   /* height: 200px; */
   /* 位置定死，让它自动拉伸匹配除了标题栏和导航栏的剩余部分 */
   position: absolute;
-  top: 44px;
   bottom: 49px;
+  top: 44px;
   left: 0;
   right: 0;
 }

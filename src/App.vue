@@ -5,18 +5,25 @@
       <router-view></router-view>
     </keep-alive>
     <main-tab-bar></main-tab-bar>
+    <icon></icon>
+    <svg-icon></svg-icon>
   </div>
 </template>
 
 <script>
 // 直接把现成的maintabbar拿过来用
 import MainTabBar from "components/content/mainTabbar/MainTabBar";
+// 为了能在profile中使用svg引入的两个vue
+import Icon from "components/content/Icon/Icon";
+import SvgIcon from "components/content/Icon/Svg";
 
 export default {
   name: "App",
   components: {
     MainTabBar,
-  },
+    Icon,
+    SvgIcon
+  }
 };
 </script>
 
