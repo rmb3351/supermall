@@ -49,9 +49,12 @@ const router = new VueRouter({
   mode: "history"
 });
 router.beforeEach((to, from, next) => {
+  const loggedInUser = getItem("loggedInUser");
+
+  // 登录页面守卫
   if (to.path === "/login") {
     // 去登录页，未登录则放行
-    if (!getItem("loggedInUser")) {
+    if (!loggedInUser) {
       next();
     } else if (from.path !== "/cart" && from.path !== "/profile") {
       // 键入地址的回主页
@@ -59,12 +62,14 @@ router.beforeEach((to, from, next) => {
     } else if (from.path === "/profile") {
       next("/address");
     } else {
-      // 去结算的后面看情况处理
-      console.log("页面还在施工中，下次再尝试噢");
+      next("/trade");
     }
-  } else if (to.path.indexOf("address") !== -1) {
+  }
+
+  // 地址页面守卫
+  else if (to.path.indexOf("address") !== -1) {
     // 去地址页，未登录回主页
-    if (!getItem("loggedInUser")) {
+    if (!loggedInUser) {
       next("/home");
     } else if (to.path.indexOf("modAddr") !== -1) {
       // 登录则验证地址id是否合法
@@ -74,15 +79,26 @@ router.beforeEach((to, from, next) => {
       // 排除第一位不是数字（负数或者乱输）
       if (aid === "") return;
       aid *= 1;
-      const user = getItem("loggedInUser");
-      const userInfo = getItem(user);
+      const userInfo = getItem(loggedInUser);
       if (aid < userInfo.addresses.length) {
         next();
       }
     } else {
       next();
     }
-  } else {
+  }
+
+  // 交易页面守卫
+  else if (to.path === "/trade") {
+    if (!loggedInUser) {
+      next("/home");
+    } else {
+      next();
+    }
+  }
+
+  // 其他情况放行
+  else {
     next();
   }
 });

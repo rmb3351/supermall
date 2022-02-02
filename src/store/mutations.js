@@ -13,23 +13,36 @@ export default {
     state.cartList.push(payload);
     syncUserInfo(state);
   },
-  // 购物车的增删改查
+  // 购物车的增删改
   [muTypes.PLUS_CART_COUNT](state, payload) {
-    payload.count++;
-    if (payload.count === 1) payload.checked = true;
-    syncUserInfo(state);
+    if (!state.handlingSinglePurchase) {
+      payload.count++;
+      if (payload.count === 1) payload.checked = true;
+      syncUserInfo(state);
+    } else {
+      state.singlePurchase.count++;
+    }
   },
   [muTypes.MINUS_CART_COUNT](state, payload) {
-    payload.count--;
-    if (payload.count === 0) payload.checked = false;
-    syncUserInfo(state);
+    if (!state.handlingSinglePurchase) {
+      payload.count--;
+      if (payload.count === 0) payload.checked = false;
+      syncUserInfo(state);
+    } else if (state.singlePurchase.count > 1) {
+      state.singlePurchase.count--;
+    }
   },
   [muTypes.MODIFY_CART_COUNT](state, payload) {
     // 由于都是有效修改，当前为0，则需选中，改后为0，则需反选
-    if (payload.purchase.count === 0) payload.purchase.checked = true;
-    payload.purchase.count = payload.nowCount;
-    if (payload.nowCount === 0) payload.purchase.checked = false;
-    syncUserInfo(state);
+    if (!state.handlingSinglePurchase) {
+      if (payload.purchase.count === 0) payload.purchase.checked = true;
+      payload.purchase.count = payload.nowCount;
+      if (payload.nowCount === 0) payload.purchase.checked = false;
+      syncUserInfo(state);
+    } else {
+      state.singlePurchase.count =
+        payload.nowCount === 0 ? 1 : payload.nowCount;
+    }
   },
   [muTypes.DELETE_CHOSEN](state, payload) {
     state.cartList = state.cartList.filter(item => {
@@ -124,5 +137,15 @@ export default {
   },
   [muTypes.HIDE_TAB_BAR](state, payload) {
     state.hideTabBar = payload;
+  },
+
+  // 购买单件物品相关
+  [muTypes.BUY_SINGLE_PURCHASE](state, payload) {
+    state.handlingSinglePurchase = true;
+    state.singlePurchase = payload;
+  },
+  [muTypes.REMOVE_SINGLE_PURCHASE](state) {
+    state.handlingSinglePurchase = false;
+    state.singlePurchase = {};
   }
 };

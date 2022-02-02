@@ -1,5 +1,5 @@
-// 防抖函数，想防止某些函数调用过于频繁，增大服务器压力，可以利用防抖函数封装然它把多次调用并成一次
-// 第一个参数是要封装的函数，第二个参数是两次调用间的最小时间间隔
+/* 防抖函数，想防止某些函数调用过于频繁，增大服务器压力，可以利用防抖函数封装然它把多次调用并成一次
+第一个参数是要封装的函数，第二个参数是两次调用间的最小时间间隔 */
 export function debounce(func, delay) {
   // 这里的计时器是个延迟执行的函数，在这里先初始化计时器
   let timer = null;
@@ -14,6 +14,7 @@ export function debounce(func, delay) {
     }, delay);
   };
 }
+
 // 时间戳的格式处理函数
 export function formatDate(date, fmt) {
   // 利用正则表达式匹配y年M月d日h时m分s秒，然后对它们分别进行处理
@@ -51,12 +52,14 @@ function padLeftZero(str) {
   return ("00" + str).substr(str.length);
 }
 
+// localStorage方法封装
 export function setItem(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 export function getItem(key) {
   return JSON.parse(localStorage.getItem(key));
 }
+
 // 登录时合并游客和登录用户购物车
 export function mergeArr(arr1, arr2) {
   // 合并、转成对象，用iid区分是否合并
@@ -72,9 +75,9 @@ export function mergeArr(arr1, arr2) {
   for (let key in arr3Obj) {
     arrMerge.push(arr3Obj[key]);
   }
-  console.log(arrMerge);
   return arrMerge;
 }
+
 // mutations里用常数名封装一个函数复用无效，所以在这里操作，可能是不规范操作，不过没什么问题
 export function syncUserInfo(state) {
   // 如果登录了，还需要对vuex和localStorage里登录用户的购物车信息进行更新

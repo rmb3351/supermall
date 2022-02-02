@@ -8,9 +8,11 @@
         ></check-button>
       </slot>
     </div>
+
     <div class="item-img">
       <img :src="purchase.image" alt="商品图片" />
     </div>
+
     <div class="item-info">
       <div class="item-title">{{ purchase.title }}</div>
       <div class="item-desc">{{ purchase.desc }}</div>
@@ -32,7 +34,7 @@
 <script>
 import CheckButton from "components/common/checkButton/CheckButton";
 
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 import { CHECKED_ITEM } from "@/store/mutations-types";
 
@@ -74,7 +76,11 @@ export default {
       if (this.purchase.count < 1) {
         this.$toast.show("已经不能再减啦", 1000);
         return;
-      } else if (this.purchase.count === 1 && this.purchase.checked) {
+      } else if (
+        this.purchase.count === 1 &&
+        this.purchase.checked &&
+        !this.isSingle
+      ) {
         this.$toast.show("帮您取消选中啦", 1000);
       }
       this.minus(this.purchase);
@@ -106,6 +112,9 @@ export default {
         this.isFirstBind = false;
       }
     }
+  },
+  computed: {
+    ...mapState({ isSingle: "handlingSinglePurchase" })
   }
 };
 </script>

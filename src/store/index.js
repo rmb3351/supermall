@@ -16,7 +16,9 @@ const state = {
   routeChangeCount: 0,
   // 为了自动初始化，把type设为空让两个type都不匹配
   resizeType: "",
-  hideTabBar: false
+  hideTabBar: false,
+  handlingSinglePurchase: false,
+  singlePurchase: {}
 };
 
 const store = new Vuex.Store({

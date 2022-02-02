@@ -13,13 +13,32 @@
     </div>
     <trade-list class="list"></trade-list>
     <cart-bottom-bar v-show="isCompShow" class="bottom-bar">
-      <div slot="left" class="left">共{{ cartChecked.length }}件</div>
+      <!-- 购物车结算商品数量 -->
+      <div v-if="!isSingle" slot="left" class="left">
+        共{{ cartChecked.length }}件
+      </div>
+      <!-- 单件购买商品数量 -->
+      <div v-else slot="left" class="left">共{{ singleData.count }}件</div>
       <div slot="center" class="center">
         合计
-        <div class="price">
+        <!-- 购物车结算显示价格 -->
+        <div class="price" v-if="!isSingle">
           ￥
-          <div class="int">{{ price.substr(0, 3) }}</div>
-          {{ price.substr(3) }}
+          <div class="int">{{ price.substring(0, price.length - 3) }}</div>
+          {{ price.substr(price.length - 3) }}
+        </div>
+        <!-- 单件购买显示价格 -->
+        <div class="price" v-else>
+          ￥
+          <div class="int">
+            {{
+              singleData.totalPrice.substring(
+                0,
+                singleData.totalPrice.length - 3
+              )
+            }}
+          </div>
+          {{ singleData.totalPrice.substr(singleData.totalPrice.length - 3) }}
         </div>
       </div>
       <div slot="right" class="right">提交订单</div>
@@ -33,7 +52,7 @@ import AddressItem from "../address/childComponents/AddressItem.vue";
 import CartBottomBar from "views/cart/childComponents/CartBottomBar";
 import TradeList from "./childComponents/TradeList.vue";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import { resetResizeMixin } from "common/mixins";
 export default {
@@ -53,8 +72,10 @@ export default {
     ...mapGetters({
       addresses: "userAddresses",
       price: "cartPrice",
-      cartChecked: "cartChecked"
+      cartChecked: "cartChecked",
+      singleData: "singleBottomData"
     }),
+    ...mapState({ isSingle: "handlingSinglePurchase" }),
     addrId() {
       if (this.id !== undefined && this.addresses.length > this.id)
         return this.id;

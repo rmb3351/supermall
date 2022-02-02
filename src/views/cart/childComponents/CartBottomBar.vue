@@ -74,7 +74,7 @@ export default {
       if (this.cartPrice == 0) {
         this.$toast.show("请先选择要购买的商品");
       } else {
-        this.$router.push("/login");
+        this.$router.push("/login").catch(err => err);
       }
     },
     deleteItems() {

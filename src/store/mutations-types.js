@@ -24,3 +24,7 @@ export const ROUTE_CHANGE = "route_change";
 // 屏幕适配相关
 export const WINDOW_RESIZE = "window_resize";
 export const HIDE_TAB_BAR = "hide_tab-bar";
+
+// 单独购买相关
+export const BUY_SINGLE_PURCHASE = "buy_single_purchase";
+export const REMOVE_SINGLE_PURCHASE = "remove_single_purchase";

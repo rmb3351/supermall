@@ -30,5 +30,14 @@ export default {
   userAddresses(state, getters) {
     if (!state.loggedInUser) return [];
     return state.userInfo[state.loggedInUser].addresses;
+  },
+
+  singleBottomData(state, getters) {
+    const singlePurchase = state.singlePurchase;
+    const bottomData = {
+      totalPrice: (singlePurchase.price * singlePurchase.count).toFixed(2) + "",
+      count: singlePurchase.count
+    };
+    return bottomData;
   }
 };

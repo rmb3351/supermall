@@ -18,7 +18,7 @@
       <div class="cart" @click="isChoosing = !isChoosing">
         加入购物车
       </div>
-      <div class="buy">购买</div>
+      <div class="buy" @click="emitBuyClick">购买</div>
     </div>
     <div class="add-num" v-if="isChoosing">
       <button @click="choosingCount > 1 ? --choosingCount : choosingCount">
@@ -33,8 +33,6 @@
 </template>
 
 <script>
-// import SportBall from 'components/content/sportBall/SportBall'
-
 export default {
   name: "DetailBottomBar",
   data() {
@@ -43,17 +41,16 @@ export default {
       choosingCount: 1
     };
   },
-  components: {
-    // SportBall
-  },
   methods: {
     chooseCount() {
       this.isChoosing = true;
     },
     addToCart() {
       this.isChoosing = false;
-      // this.$refs.ball.run(event.target)
       this.$emit("addToCart", this.choosingCount);
+    },
+    emitBuyClick() {
+      this.$emit("buyClick");
     }
   }
 };

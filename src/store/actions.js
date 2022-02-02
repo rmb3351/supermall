@@ -22,34 +22,50 @@ export default {
         context.commit(ADD_TO_CART, goods);
         resolve("添加新商品");
       }
-      // state.cartList.push(goods)
-      // console.log(context.state.cartList);
     });
   },
+
+  /* 直接修改商品数量前的前置处理，也要区分时购物车结算还是直接购买 */
   // 增加、减少购物车相应商品的数量
   plusCartCount(context, goods) {
     return new Promise((resolve, reject) => {
-      let purchase = context.state.cartList.find(item => item.iid == goods.iid);
-      if (purchase.count === 0 && !purchase.checked) {
-        resolve("又为您选中这个商品啦");
+      const state = context.state;
+      let purchase;
+      if (!state.handlingSinglePurchase) {
+        purchase = state.cartList.find(item => item.iid == goods.iid);
+        if (purchase.count === 0 && !purchase.checked) {
+          resolve("又为您选中这个商品啦");
+        }
+      } else {
+        purchase = goods;
       }
       context.commit(PLUS_CART_COUNT, purchase);
     });
   },
   minusCartCount(context, goods) {
-    let purchase = context.state.cartList.find(item => item.iid == goods.iid);
+    const state = context.state;
+    let purchase;
+    if (!state.handlingSinglePurchase) {
+      purchase = state.cartList.find(item => item.iid == goods.iid);
+    } else {
+      purchase = goods;
+    }
     context.commit(MINUS_CART_COUNT, purchase);
   },
   // 直接修改购物车商品数量
   modifyCartCount(context, goods) {
     return new Promise((resolve, reject) => {
-      let purchase = context.state.cartList.find(
-        item => item.iid == goods.purchase.iid
-      );
-      if (purchase.count === 0 && !purchase.checked) {
-        resolve("又为您选中这个商品啦");
-      } else if (goods.value === 0 && purchase.checked) {
-        resolve("帮您取消选中啦");
+      const state = context.state;
+      let purchase;
+      if (!state.handlingSinglePurchase) {
+        purchase = state.cartList.find(item => item.iid == goods.purchase.iid);
+        if (purchase.count === 0 && !purchase.checked) {
+          resolve("又为您选中这个商品啦");
+        } else if (goods.value === 0 && purchase.checked) {
+          resolve("帮您取消选中啦");
+        }
+      } else {
+        purchase = goods.purchase;
       }
       context.commit(MODIFY_CART_COUNT, { purchase, nowCount: goods.value });
     });

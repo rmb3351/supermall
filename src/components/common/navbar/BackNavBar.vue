@@ -14,6 +14,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { REMOVE_SINGLE_PURCHASE } from "@/store/mutations-types";
 export default {
   name: "BackNavBar",
   data() {
@@ -21,11 +22,13 @@ export default {
   },
   computed: {
     ...mapState({
-      count: "routeChangeCount"
+      count: "routeChangeCount",
+      isSingle: "handlingSinglePurchase"
     })
   },
   methods: {
     goBack() {
+      if (this.isSingle) this.$store.commit(REMOVE_SINGLE_PURCHASE);
       if (this.count > 1) {
         this.$router.back();
       } else {
