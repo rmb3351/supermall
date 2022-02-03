@@ -14,7 +14,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { REMOVE_SINGLE_PURCHASE } from "@/store/mutations-types";
+import { REMOVE_SINGLE_PURCHASE, RESET_ADDRESS } from "@/store/mutations-types";
 export default {
   name: "BackNavBar",
   data() {
@@ -28,7 +28,12 @@ export default {
   },
   methods: {
     goBack() {
-      if (this.isSingle) this.$store.commit(REMOVE_SINGLE_PURCHASE);
+      if (this.isSingle && this.$route.path === "/trade") {
+        this.$store.commit(REMOVE_SINGLE_PURCHASE);
+        this.$store.commit(RESET_ADDRESS);
+      } else if (this.$route.path === "/trade") {
+        this.$store.commit(RESET_ADDRESS);
+      }
       if (this.count > 1) {
         this.$router.back();
       } else {

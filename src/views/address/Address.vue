@@ -22,6 +22,7 @@
 import BackNavBar from "components/common/navbar/BackNavBar";
 import AddressItem from "./childComponents/AddressItem.vue";
 import { mapGetters } from "vuex";
+import { CHOOSE_ADDRESS } from "@/store/mutations-types";
 export default {
   name: "Address",
   data() {
@@ -38,7 +39,8 @@ export default {
     },
     chooseAddr(id) {
       if (this.type === "choose") {
-        this.$router.push({ path: "/trade", query: { id } });
+        this.$store.commit(CHOOSE_ADDRESS, id);
+        this.$router.back();
       }
     }
   },

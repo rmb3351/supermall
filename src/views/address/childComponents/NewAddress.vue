@@ -13,28 +13,31 @@
       <div class="name">
         <div class="table-name">收货人</div>
         <input
+          ref="name"
           class="input-content"
           type="text"
           placeholder="请填写收货人姓名"
-          v-model="pageInfo.name"
+          :value="pageInfo.name"
         />
       </div>
       <div class="phone">
         <div class="table-name">手机号码</div>
         <input
+          ref="phone"
           class="input-content"
           type="text"
           placeholder="请填写收货人手机号"
-          v-model="pageInfo.phone"
+          :value="pageInfo.phone"
         />
       </div>
       <div class="detail-address">
         <div class="table-name">详细地址</div>
         <textarea
+          ref="addr"
           class="input-content"
           type="text"
           placeholder="省市区县、乡镇内的街道、楼牌号等"
-          v-model="pageInfo.addr"
+          :value="pageInfo.addr"
         />
       </div>
     </div>
@@ -44,7 +47,12 @@
         <div class="tip">提醒：每次下单会默认推荐使用该地址</div>
       </div>
       <div class="right">
-        <input class="right-check" type="checkbox" v-model="pageInfo.default" />
+        <input
+          ref="default"
+          class="right-check"
+          type="checkbox"
+          :checked="pageInfo.default"
+        />
       </div>
     </div>
     <div class="save" @click="savAddr" v-show="isCompShow">保存</div>
@@ -85,10 +93,29 @@ export default {
       this.$router.back();
     },
     savAddr() {
-      if (this.pageInfo.id !== undefined) {
-        this.$store.commit(MOD_ADDRESS, this.pageInfo);
+      // 保存时获取用户的输入作为地址信息保存，用v-model的话修改后不保存直接点后退也能修改成功
+      const newInfo = {
+        name: this.$refs.name.value,
+        phone: this.$refs.phone.value,
+        addr: this.$refs.addr.value,
+        default: this.$refs.default.checked,
+        id: this.pageInfo.id
+      };
+      if (newInfo.id !== undefined) {
+        // 填写完整信息则保存，否则提示且return
+        if (newInfo.name && newInfo.phone && newInfo.addr) {
+          this.$store.commit(MOD_ADDRESS, newInfo);
+        } else {
+          this.$toast.show("请填写完整信息");
+          return;
+        }
       } else {
-        this.$store.commit(NEW_ADDRESS, this.pageInfo);
+        if (newInfo.name && newInfo.phone && newInfo.addr) {
+          this.$store.commit(NEW_ADDRESS, newInfo);
+        } else {
+          this.$toast.show("请填写完整信息");
+          return;
+        }
       }
       setItem(this.loggedInUser, this.userInfo[this.loggedInUser]);
       this.$router.back();

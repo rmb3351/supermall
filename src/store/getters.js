@@ -28,8 +28,14 @@ export default {
     return getters.checkedCount === getters.cartLength;
   },
   userAddresses(state, getters) {
-    if (!state.loggedInUser) return [];
-    return state.userInfo[state.loggedInUser].addresses;
+    let addresses;
+    if (!state.loggedInUser) {
+      addresses = [];
+    } else {
+      addresses = state.userInfo[state.loggedInUser].addresses;
+    }
+    console.log("改变了");
+    return addresses;
   },
 
   singleBottomData(state, getters) {

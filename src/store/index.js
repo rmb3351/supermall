@@ -18,7 +18,8 @@ const state = {
   resizeType: "",
   hideTabBar: false,
   handlingSinglePurchase: false,
-  singlePurchase: {}
+  singlePurchase: {},
+  addressId: 0
 };
 
 const store = new Vuex.Store({

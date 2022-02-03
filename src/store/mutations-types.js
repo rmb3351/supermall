@@ -17,6 +17,8 @@ export const LOGGED_OUT = "logged_out";
 export const NEW_ADDRESS = "new_address";
 export const MOD_ADDRESS = "mod_address";
 export const DEL_ADDRESS = "del_address";
+export const CHOOSE_ADDRESS = "choose_address";
+export const RESET_ADDRESS = "reset_address";
 
 // 路由跳转
 export const ROUTE_CHANGE = "route_change";

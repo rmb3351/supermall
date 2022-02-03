@@ -4,7 +4,7 @@
       <div slot="center">确认订单</div>
     </back-nav-bar>
     <div class="addr" @click="enterChoosing">
-      <address-item :tradeAddr="addresses[addrId]">
+      <address-item :tradeAddr="showingAddress">
         <div slot="right" class="iconfont icon-youjiantou"></div>
       </address-item>
       <div class="bottom-line">
@@ -58,7 +58,9 @@ import { resetResizeMixin } from "common/mixins";
 export default {
   name: "Trade",
   data() {
-    return {};
+    return {
+      addrId: 0
+    };
   },
   components: {
     BackNavBar,
@@ -66,7 +68,6 @@ export default {
     CartBottomBar,
     TradeList
   },
-  props: ["id"],
   mixins: [resetResizeMixin],
   computed: {
     ...mapGetters({
@@ -75,22 +76,36 @@ export default {
       cartChecked: "cartChecked",
       singleData: "singleBottomData"
     }),
-    ...mapState({ isSingle: "handlingSinglePurchase" }),
-    addrId() {
-      if (this.id !== undefined && this.addresses.length > this.id)
-        return this.id;
-      else {
-        return 0;
+    ...mapState({ isSingle: "handlingSinglePurchase", id: "addressId" }),
+    showingAddress() {
+      if (this.addrId !== undefined) {
+        console.log(this.addrId);
+        return this.addresses[this.addrId];
+      } else {
+        return {
+          addr: "请选择收货地址"
+        };
       }
     }
   },
   methods: {
     enterChoosing() {
       this.$router.push({ path: "/address", query: { type: "choose" } });
+    },
+    // 确保地址id有效，每次activated主动调用
+    checkAddressId() {
+      if (this.addresses.length > this.id) {
+        this.addrId = this.id;
+      } else if (this.addresses.length > 0) {
+        this.addrId = 0;
+      } else {
+        this.addrId = undefined;
+      }
     }
   },
   activated() {
     this.resetResize("trade");
+    this.checkAddressId();
   }
 };
 </script>

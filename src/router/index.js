@@ -39,8 +39,8 @@ const routes = [
   {
     path: "/trade",
     component: Trade,
-    props({ query: { id } }) {
-      return { id };
+    props({ query: { from } }) {
+      return { from };
     }
   }
 ];

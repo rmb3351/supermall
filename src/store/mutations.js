@@ -125,6 +125,12 @@ export default {
       }
     });
   },
+  [muTypes.CHOOSE_ADDRESS](state, payload) {
+    state.addressId = payload;
+  },
+  [muTypes.RESET_ADDRESS](state) {
+    state.addressId = 0;
+  },
 
   // 记录路由跳转次数，决定是否可以后退
   [muTypes.ROUTE_CHANGE](state, payload) {
