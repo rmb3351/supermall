@@ -75,7 +75,7 @@ export default {
     pageInfo: {
       type: Object,
       default() {
-        return { name: "", phone: "", addr: "", default: false };
+        return { name: "", phone: "", addr: "", default: false, chosen: false };
       }
     }
   },

@@ -4,7 +4,7 @@
       <div slot="center">确认订单</div>
     </back-nav-bar>
     <div class="addr" @click="enterChoosing">
-      <address-item :tradeAddr="showingAddress">
+      <address-item :tradeAddr="nowAddress">
         <div slot="right" class="iconfont icon-youjiantou"></div>
       </address-item>
       <div class="bottom-line">
@@ -41,7 +41,7 @@
           {{ singleData.totalPrice.substr(singleData.totalPrice.length - 3) }}
         </div>
       </div>
-      <div slot="right" class="right">提交订单</div>
+      <div slot="right" class="right" @click="handleTrading">提交订单</div>
     </cart-bottom-bar>
   </div>
 </template>
@@ -59,7 +59,7 @@ export default {
   name: "Trade",
   data() {
     return {
-      addrId: 0
+      nowAddress: {}
     };
   },
   components: {
@@ -76,36 +76,36 @@ export default {
       cartChecked: "cartChecked",
       singleData: "singleBottomData"
     }),
-    ...mapState({ isSingle: "handlingSinglePurchase", id: "addressId" }),
-    showingAddress() {
-      if (this.addrId !== undefined) {
-        console.log(this.addrId);
-        return this.addresses[this.addrId];
-      } else {
-        return {
-          addr: "请选择收货地址"
-        };
-      }
-    }
+    ...mapState({ isSingle: "handlingSinglePurchase" })
   },
   methods: {
     enterChoosing() {
       this.$router.push({ path: "/address", query: { type: "choose" } });
     },
-    // 确保地址id有效，每次activated主动调用
-    checkAddressId() {
-      if (this.addresses.length > this.id) {
-        this.addrId = this.id;
-      } else if (this.addresses.length > 0) {
-        this.addrId = 0;
+    // 优先级：选中的=》默认的（第一个）=》空的
+    resetShowingAddress() {
+      const chosenAddress = this.addresses.filter(addr => addr.chosen);
+      if (chosenAddress.length) {
+        this.nowAddress = chosenAddress[0];
+      } else if (this.addresses.length) {
+        this.nowAddress = this.addresses[0];
       } else {
-        this.addrId = undefined;
+        this.nowAddress = {
+          addr: "请选择收货地址"
+        };
+      }
+    },
+    handleTrading() {
+      if (!this.addresses.length) {
+        this.$toast.show("还未选择有效地址噢", 1500);
+        return;
       }
     }
   },
   activated() {
     this.resetResize("trade");
-    this.checkAddressId();
+    // 每次进入页面，刷新展示地址
+    this.resetShowingAddress();
   }
 };
 </script>

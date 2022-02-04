@@ -6,7 +6,7 @@
         <span class="name">{{ showingInfo.name }}</span>
         <span class="phone"
           >{{ showingInfo.phone
-          }}<span class="default" v-if="showingInfo.default">默认</span></span
+          }}<span class="default" v-show="showingInfo.default">默认</span></span
         >
       </div>
     </div>

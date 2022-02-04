@@ -27,14 +27,13 @@ export default {
     if (!getters.cartLength) return false;
     return getters.checkedCount === getters.cartLength;
   },
-  userAddresses(state, getters) {
+  userAddresses(state) {
     let addresses;
     if (!state.loggedInUser) {
       addresses = [];
     } else {
       addresses = state.userInfo[state.loggedInUser].addresses;
     }
-    console.log("改变了");
     return addresses;
   },
 

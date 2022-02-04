@@ -80,8 +80,8 @@ export default {
     state.cartList = [];
   },
 
-  // 保存新地址信息和修改现有地址信息的操作
-  // 也加入了默认地址的排序首位功能和取消其他地址的默认功能
+  /* 保存新地址信息和修改现有地址信息的操作
+  也加入了默认地址的排序首位功能和取消其他地址的默认功能 */
   [muTypes.NEW_ADDRESS](state, payload) {
     const addresses = state.userInfo[state.loggedInUser].addresses;
     // 逻辑类似于修改时勾选，还简单点
@@ -115,6 +115,7 @@ export default {
       addresses[payload.id] = payload;
     }
   },
+  // 删除地址
   [muTypes.DEL_ADDRESS](state, payload) {
     const addresses = state.userInfo[state.loggedInUser].addresses;
     addresses.splice(payload.id, 1);
@@ -126,10 +127,13 @@ export default {
     });
   },
   [muTypes.CHOOSE_ADDRESS](state, payload) {
-    state.addressId = payload;
+    const addresses = state.userInfo[state.loggedInUser].addresses;
+    addresses.forEach(addr => (addr.chosen = false));
+    addresses[payload].chosen = true;
   },
   [muTypes.RESET_ADDRESS](state) {
-    state.addressId = 0;
+    const addresses = state.userInfo[state.loggedInUser].addresses;
+    addresses.forEach(addr => (addr.chosen = false));
   },
 
   // 记录路由跳转次数，决定是否可以后退
