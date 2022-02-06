@@ -81,8 +81,15 @@ export const resetResizeMixin = {
       window.onresize = () => {
         return (() => {
           this.isCompShow = this.initialHeight === outerHeight;
+          // 购物车界面是否显示maintabbar的判断
           if (this.buttonName !== undefined) {
             this.$store.commit(HIDE_TAB_BAR, !this.isCompShow);
+          }
+          /*  resize后，由于地址栏的信息是v-bind绑定而不是v-model（使用v-model会引起未保存就修改地址的bug），在resize后填写的信息会全部消息，所以这里在手机输入法弹下去之前保存 */
+          if (type === "addr") {
+            if (!this.isCompShow) {
+              this.saveAddrCache();
+            }
           }
         })();
       };

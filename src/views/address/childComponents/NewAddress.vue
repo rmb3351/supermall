@@ -17,7 +17,7 @@
           class="input-content"
           type="text"
           placeholder="请填写收货人姓名"
-          :value="pageInfo.name"
+          :value="cacheAddr.name"
         />
       </div>
       <div class="phone">
@@ -27,7 +27,7 @@
           class="input-content"
           type="text"
           placeholder="请填写收货人手机号"
-          :value="pageInfo.phone"
+          :value="cacheAddr.phone"
         />
       </div>
       <div class="detail-address">
@@ -37,7 +37,7 @@
           class="input-content"
           type="text"
           placeholder="省市区县、乡镇内的街道、楼牌号等"
-          :value="pageInfo.addr"
+          :value="cacheAddr.addr"
         />
       </div>
     </div>
@@ -51,7 +51,7 @@
           ref="default"
           class="right-check"
           type="checkbox"
-          :checked="pageInfo.default"
+          :checked="cacheAddr.default"
         />
       </div>
     </div>
@@ -81,7 +81,8 @@ export default {
   },
   data() {
     return {
-      initialHeight: outerHeight
+      initialHeight: outerHeight,
+      cacheAddr: {}
     };
   },
   methods: {
@@ -120,6 +121,15 @@ export default {
       setItem(this.loggedInUser, this.userInfo[this.loggedInUser]);
       this.$router.back();
     },
+    // 只用覆盖部分数据，所以使用assign
+    saveAddrCache() {
+      Object.assign(this.cacheAddr, {
+        name: this.$refs.name.value,
+        phone: this.$refs.phone.value,
+        addr: this.$refs.addr.value,
+        default: this.$refs.default.checked
+      });
+    },
 
     // 辅助获取输入框焦点的功能
     focusWhich(e) {
@@ -130,6 +140,26 @@ export default {
         which = e.path[e.path.length - 10].children[1];
       }
       which.focus();
+    },
+    deepCopy(target, source) {
+      //数组和对象都可以for in遍历
+      for (const key in source) {
+        //数组和对象需要单独处理，其他直接拷贝
+        if (
+          Object.prototype.toString.call(source[key]).slice(8, -1) === "Array"
+        ) {
+          target[key] = [];
+          deepCopy(target[key], source[key]);
+        } else if (
+          Object.prototype.toString.call(source[key]).slice(8, -1) === "Object"
+        ) {
+          target[key] = {};
+          deepCopy(target[key], source[key]);
+        } else {
+          // 不直接赋值，做vue的响应式修改
+          this.$set(target, [key], source[key]);
+        }
+      }
     }
   },
   computed: {
@@ -141,6 +171,7 @@ export default {
     }
   },
   mounted() {
+    this.deepCopy(this.cacheAddr, this.pageInfo);
     this.resetResize("addr");
   }
 };

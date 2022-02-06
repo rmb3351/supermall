@@ -3,6 +3,8 @@
     <back-nav-bar>
       <div slot="center">确认订单</div>
     </back-nav-bar>
+
+    <!-- 地址栏 -->
     <div class="addr" @click="enterChoosing">
       <address-item :tradeAddr="nowAddress">
         <div slot="right" class="iconfont icon-youjiantou"></div>
@@ -11,7 +13,11 @@
         <div class="line" v-for="i in 30" :key="i"></div>
       </div>
     </div>
+
+    <!-- 商品清单 -->
     <trade-list class="list"></trade-list>
+
+    <!-- 底部栏 -->
     <cart-bottom-bar v-show="isCompShow" class="bottom-bar">
       <!-- 购物车结算商品数量 -->
       <div v-if="!isSingle" slot="left" class="left">
@@ -43,6 +49,12 @@
       </div>
       <div slot="right" class="right" @click="handleTrading">提交订单</div>
     </cart-bottom-bar>
+
+    <!-- 确认支付框 -->
+    <trade-confirm
+      v-show="isConfirmShow"
+      @shadowClick="isConfirmShow = false"
+    ></trade-confirm>
   </div>
 </template>
 
@@ -51,6 +63,7 @@ import BackNavBar from "components/common/navbar/BackNavBar";
 import AddressItem from "../address/childComponents/AddressItem.vue";
 import CartBottomBar from "views/cart/childComponents/CartBottomBar";
 import TradeList from "./childComponents/TradeList.vue";
+import TradeConfirm from "./childComponents/TradeConfirm";
 
 import { mapGetters, mapState } from "vuex";
 
@@ -59,14 +72,16 @@ export default {
   name: "Trade",
   data() {
     return {
-      nowAddress: {}
+      nowAddress: {},
+      isConfirmShow: false
     };
   },
   components: {
     BackNavBar,
     AddressItem,
     CartBottomBar,
-    TradeList
+    TradeList,
+    TradeConfirm
   },
   mixins: [resetResizeMixin],
   computed: {
@@ -100,6 +115,7 @@ export default {
         this.$toast.show("还未选择有效地址噢", 1500);
         return;
       }
+      this.isConfirmShow = true;
     }
   },
   activated() {

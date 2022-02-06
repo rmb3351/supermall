@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { REMOVE_SINGLE_PURCHASE, RESET_ADDRESS } from "@/store/mutations-types";
 export default {
   name: "BackNavBar",
@@ -24,7 +24,8 @@ export default {
     ...mapState({
       count: "routeChangeCount",
       isSingle: "handlingSinglePurchase"
-    })
+    }),
+    ...mapGetters({ addresses: "userAddresses" })
   },
   methods: {
     goBack() {

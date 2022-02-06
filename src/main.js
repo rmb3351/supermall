@@ -9,6 +9,7 @@ import toast from "components/common/toast";
 import FastClick from "fastclick";
 import VueLazyLoad from "vue-lazyload";
 import VConsole from "vconsole";
+import iconfont from "./assets/iconfont/iconfont";
 
 Vue.config.productionTip = false;
 const vconsole = new VConsole();
