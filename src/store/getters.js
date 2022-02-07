@@ -13,6 +13,12 @@ export default {
   checkedCount(state, getters) {
     return getters.cartChecked.length;
   },
+  // 购物车选中商品的总件数
+  cartCount(state, getters) {
+    return getters.cartChecked.reduce((preValue, item) => {
+      return preValue + item.count;
+    }, 0);
+  },
   // 合计价格
   cartPrice(state, getters) {
     return getters.cartChecked

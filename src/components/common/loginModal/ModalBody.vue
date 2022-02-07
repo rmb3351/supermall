@@ -91,7 +91,8 @@ export default {
         pswd,
         isLoggedIn: false,
         cart: [],
-        addresses: []
+        addresses: [],
+        tradedList: []
       });
       this.$toast.show("注册成功，请登录", 2000);
       this.$refs.uname.value = "";

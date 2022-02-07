@@ -62,7 +62,7 @@
 <script>
 import BackNavBar from "components/common/navbar/BackNavBar";
 import { setItem } from "common/utils";
-import { resetResizeMixin } from "common/mixins";
+import { resetResizeMixin, deepCopyMixin } from "common/mixins";
 import { mapState } from "vuex";
 import { NEW_ADDRESS, MOD_ADDRESS, DEL_ADDRESS } from "@/store/mutations-types";
 export default {
@@ -70,7 +70,7 @@ export default {
   components: {
     BackNavBar
   },
-  mixins: [resetResizeMixin],
+  mixins: [resetResizeMixin, deepCopyMixin],
   props: {
     pageInfo: {
       type: Object,
@@ -140,26 +140,6 @@ export default {
         which = e.path[e.path.length - 10].children[1];
       }
       which.focus();
-    },
-    deepCopy(target, source) {
-      //数组和对象都可以for in遍历
-      for (const key in source) {
-        //数组和对象需要单独处理，其他直接拷贝
-        if (
-          Object.prototype.toString.call(source[key]).slice(8, -1) === "Array"
-        ) {
-          target[key] = [];
-          deepCopy(target[key], source[key]);
-        } else if (
-          Object.prototype.toString.call(source[key]).slice(8, -1) === "Object"
-        ) {
-          target[key] = {};
-          deepCopy(target[key], source[key]);
-        } else {
-          // 不直接赋值，做vue的响应式修改
-          this.$set(target, [key], source[key]);
-        }
-      }
     }
   },
   computed: {

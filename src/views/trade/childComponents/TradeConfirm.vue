@@ -1,43 +1,75 @@
 <template>
   <div class="confirm">
+    <!-- 阴影部分 -->
     <div class="shadow" @click="handleShadowClick"></div>
+
+    <!-- 底部确认框 -->
     <div class="confirm-box">
+      <!-- 价格框 -->
       <div class="price-box">
         <div class="price">
           ￥
-          <div class="int">8299</div>
-          .00
+          <div class="int">
+            {{ totalPrice.substring(0, totalPrice.length - 3) }}
+          </div>
+          {{ totalPrice.substr(totalPrice.length - 3) }}
         </div>
       </div>
-      <div class="payway-box">
-        <div class="payway">
-          <div class="payway-left">
-            <svg class="icon" aria-hidden="true">
+
+      <!-- 支付框 -->
+      <div class="payway-box" @click="choosePayway">
+        <!-- 支付宝支付栏 -->
+        <div class="payway" data-index="0">
+          <div class="payway-left" data-index="0">
+            <svg class="icon" aria-hidden="true" data-index="0">
               <use xlink:href="#icon-zhifubao"></use>
             </svg>
             支付宝支付
           </div>
-          <input type="radio" class="payway-right" name="payway" />
+          <div class="payway-right" data-index="0">
+            <svg class="icon" aria-hidden="true" data-index="0">
+              <use v-show="paywayIndex !== 0" xlink:href="#icon-weixuan"></use>
+              <use v-show="paywayIndex == 0" xlink:href="#icon-xuanzhong"></use>
+            </svg>
+          </div>
         </div>
-        <div class="payway">
-          <div class="payway-left">
-            <svg class="icon" aria-hidden="true">
+
+        <!-- 微信支付栏 -->
+        <div class="payway" data-index="1">
+          <div class="payway-left" data-index="1">
+            <svg class="icon" aria-hidden="true" data-index="1">
               <use xlink:href="#icon-weixinzhifu"></use></svg
             >微信支付
           </div>
-          <input type="radio" class="payway-right" name="payway" />
-        </div>
-        <div class="payway">
-          <div class="payway-left">
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-yunshanfu"></use></svg
-            >云闪付
+          <div class="payway-right" data-index="1">
+            <svg class="icon" aria-hidden="true" data-index="1">
+              <use v-show="paywayIndex !== 1" xlink:href="#icon-weixuan"></use>
+              <use v-show="paywayIndex == 1" xlink:href="#icon-xuanzhong"></use>
+            </svg>
           </div>
-          <input type="radio" class="payway-right" name="payway" />
+        </div>
+
+        <!-- 云闪付支付栏 -->
+        <div class="payway" data-index="2">
+          <div class="payway-left" data-index="2">
+            <svg class="icon" aria-hidden="true" data-index="2">
+              <use xlink:href="#icon-yunshanfu"></use></svg
+            >云闪付支付
+          </div>
+          <div class="payway-right" data-index="2">
+            <svg class="icon" aria-hidden="true" data-index="2">
+              <use v-show="paywayIndex !== 2" xlink:href="#icon-weixuan"></use>
+              <use v-show="paywayIndex == 2" xlink:href="#icon-xuanzhong"></use>
+            </svg>
+          </div>
         </div>
       </div>
-      <div class="bottom-btn-box">
-        <div class="pay-btn">微信支付￥8299.00</div>
+
+      <!-- 底部按钮 -->
+      <div class="bottom-btn-box" @click="confirmToPay">
+        <div class="pay-btn">
+          {{ payways[paywayIndex] }}支付￥{{ totalPrice }}
+        </div>
       </div>
     </div>
   </div>
@@ -46,12 +78,25 @@
 <script>
 export default {
   name: "TradeConfirm",
+  props: ["totalPrice"],
   data() {
-    return {};
+    return {
+      payways: ["支付宝", "微信", "云闪付"],
+      paywayIndex: 0
+    };
   },
   methods: {
     handleShadowClick() {
       this.$emit("shadowClick");
+    },
+    choosePayway(e) {
+      const currentIndex = e.target.dataset.index;
+      if (currentIndex !== undefined) {
+        this.paywayIndex = currentIndex;
+      }
+    },
+    confirmToPay() {
+      this.$emit("confirmClick");
     }
   }
 };
@@ -124,11 +169,17 @@ export default {
 .payway-box .payway:last-child {
   border-bottom: 0;
 }
+/* 支付栏左侧样式 */
 .payway-left {
   display: flex;
   align-items: center;
 }
-
+/* 右侧样式 */
+.payway-box .payway-right .icon {
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: middle;
+}
 .payway .icon {
   width: 2.5em;
   height: 2.5em;

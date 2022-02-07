@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       orderList: [
-        { icon: "#order", iconColor: "#ff8198", info: "我的消息" },
+        { icon: "#order", iconColor: "#ff8198", info: "我的订单" },
         { icon: "#point", iconColor: "#fc7b53", info: "积分商城" },
         { icon: "#vip", iconColor: "#ffc636", info: "会员卡" }
       ],

@@ -97,3 +97,28 @@ export const resetResizeMixin = {
     }
   }
 };
+
+export const deepCopyMixin = {
+  methods: {
+    deepCopy(target, source) {
+      //数组和对象都可以for in遍历
+      for (const key in source) {
+        //数组和对象需要单独处理，其他直接拷贝
+        if (
+          Object.prototype.toString.call(source[key]).slice(8, -1) === "Array"
+        ) {
+          target[key] = [];
+          deepCopy(target[key], source[key]);
+        } else if (
+          Object.prototype.toString.call(source[key]).slice(8, -1) === "Object"
+        ) {
+          target[key] = {};
+          deepCopy(target[key], source[key]);
+        } else {
+          // 不直接赋值，做vue的响应式修改
+          this.$set(target, [key], source[key]);
+        }
+      }
+    }
+  }
+};

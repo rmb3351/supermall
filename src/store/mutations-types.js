@@ -30,3 +30,6 @@ export const HIDE_TAB_BAR = "hide_tab-bar";
 // 单独购买相关
 export const BUY_SINGLE_PURCHASE = "buy_single_purchase";
 export const REMOVE_SINGLE_PURCHASE = "remove_single_purchase";
+
+// 购买成功
+export const COMFIRM_TRADE = "confirm_trade";

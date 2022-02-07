@@ -157,5 +157,25 @@ export default {
   [muTypes.REMOVE_SINGLE_PURCHASE](state) {
     state.handlingSinglePurchase = false;
     state.singlePurchase = {};
+  },
+
+  // 购买成功操作
+  [muTypes.COMFIRM_TRADE](state, payload) {
+    const tradedList = state.userInfo[state.loggedInUser].tradedList;
+    // 本次购买的商品数组
+    let tradedPurchases = [];
+    // 单件购买
+    if (payload) {
+      tradedPurchases.push(state.singlePurchase);
+      // 商品从购物车数组迁移向我的订单
+    } else {
+      tradedPurchases = state.cartList.filter(
+        item => item.checked && item.count > 0
+      );
+      state.cartList = state.cartList.filter(
+        item => !item.checked || item.count <= 0
+      );
+    }
+    tradedList.push(tradedPurchases);
   }
 };
