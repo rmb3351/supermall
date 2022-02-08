@@ -169,6 +169,9 @@ export default {
     // 单件购买
     if (payload) {
       tradedPurchases.push(state.singlePurchase);
+      // 清除单件商品且将单件购买状态置为false
+      state.handlingSinglePurchase = false;
+      state.singlePurchase = {};
       // 商品从购物车数组迁移向我的订单
     } else {
       tradedPurchases = state.cartList.filter(
