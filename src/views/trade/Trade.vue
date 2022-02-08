@@ -1,21 +1,23 @@
 <template>
   <div class="trade-content">
-    <back-nav-bar>
+    <back-nav-bar class="nav-bar">
       <div slot="center">确认订单</div>
     </back-nav-bar>
 
-    <!-- 地址栏 -->
-    <div class="addr" @click="enterChoosing">
-      <address-item :tradeAddr="nowAddress">
-        <div slot="right" class="iconfont icon-youjiantou"></div>
-      </address-item>
-      <div class="bottom-line">
-        <div class="line" v-for="i in 30" :key="i"></div>
+    <scroll ref="scroll" class="scroll">
+      <!-- 地址栏 -->
+      <div class="addr" @click="enterChoosing">
+        <address-item :tradeAddr="nowAddress">
+          <div slot="right" class="iconfont icon-youjiantou"></div>
+        </address-item>
+        <div class="bottom-line">
+          <div class="line" v-for="i in 30" :key="i"></div>
+        </div>
       </div>
-    </div>
 
-    <!-- 商品清单 -->
-    <trade-list class="list"></trade-list>
+      <!-- 商品清单 -->
+      <trade-list class="list"></trade-list>
+    </scroll>
 
     <!-- 底部栏 -->
     <cart-bottom-bar v-show="isCompShow" class="bottom-bar">
@@ -59,8 +61,11 @@
 
 <script>
 import BackNavBar from "components/common/navbar/BackNavBar";
+import Scroll from "components/common/scroll/Scroll";
+
 import AddressItem from "../address/childComponents/AddressItem.vue";
 import CartBottomBar from "views/cart/childComponents/CartBottomBar";
+
 import TradeList from "./childComponents/TradeList.vue";
 import TradeConfirm from "./childComponents/TradeConfirm";
 import TradeSuccess from "./childComponents/TradeSuccess.vue";
@@ -85,6 +90,7 @@ export default {
   components: {
     // 组件复用
     BackNavBar,
+    Scroll,
     AddressItem,
     CartBottomBar,
 
@@ -135,6 +141,7 @@ export default {
       this.resetResize("trade");
       // 每次进入页面，刷新展示地址
       this.resetShowingAddress();
+      this.$refs.scroll.scrollRefresh();
     },
 
     // 选择地址
@@ -177,6 +184,14 @@ export default {
   height: 100vh;
   background-color: rgb(243, 241, 244);
 }
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
 .addr {
   overflow: hidden;
   padding: 0;
@@ -201,6 +216,13 @@ export default {
   border-bottom: 5px solid rgb(119, 170, 251);
 }
 
+.scroll {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  bottom: 11vh;
+}
 /* 商品清单 */
 .list {
   background-color: #fff;
