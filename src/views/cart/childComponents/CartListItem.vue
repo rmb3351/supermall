@@ -19,12 +19,14 @@
       <div class="info-bottom">
         <div class="item-price left">¥{{ purchase.price }}</div>
         <div class="item-count right">
-          <button @click="minusCartCount">－</button>
-          <span class="item-num" @click="showModifier"
-            >{{ purchase.count }}
-            <input ref="modifier" type="input" v-show="isModifying"
-          /></span>
-          <button @click="plusCartCount">＋</button>
+          <slot name="right">
+            <button @click="minusCartCount">－</button>
+            <span class="item-num" @click="showModifier"
+              >{{ purchase.count }}
+              <input ref="modifier" type="input" v-show="isModifying"
+            /></span>
+            <button @click="plusCartCount">＋</button>
+          </slot>
         </div>
       </div>
     </div>

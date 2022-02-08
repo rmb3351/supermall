@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      excludePaths: ["/address", "/login", "/trade"],
+      excludePaths: ["/address", "/login", "/trade", "/historyList"],
       initialHeight: outerHeight
     };
   },

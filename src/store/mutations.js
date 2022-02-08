@@ -72,12 +72,14 @@ export default {
     state.userInfo[payload.uname] = payload;
     // 因为在登录时，用户购物车和游客购物车进行了合并，登录后现有购物车取用户购物车的值即可
     state.cartList = payload.cart;
+    state.tradedList = payload.tradedList;
   },
   [muTypes.LOGGED_OUT](state, payload) {
     state.loggedIn = false;
     state.loggedInUser = "";
     state.userInfo[payload].isLoggedIn = false;
     state.cartList = [];
+    state.tradedList = [];
   },
 
   /* 保存新地址信息和修改现有地址信息的操作
@@ -161,7 +163,7 @@ export default {
 
   // 购买成功操作
   [muTypes.COMFIRM_TRADE](state, payload) {
-    const tradedList = state.userInfo[state.loggedInUser].tradedList;
+    const userInfo = state.userInfo[state.loggedInUser];
     // 本次购买的商品数组
     let tradedPurchases = [];
     // 单件购买
@@ -175,7 +177,8 @@ export default {
       state.cartList = state.cartList.filter(
         item => !item.checked || item.count <= 0
       );
+      userInfo.cart = state.cartList;
     }
-    tradedList.push(tradedPurchases);
+    userInfo.tradedList.unshift(tradedPurchases);
   }
 };

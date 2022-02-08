@@ -74,8 +74,7 @@ export default {
       isIn: "loggedIn",
       user: "loggedInUser"
     })
-  },
-  activated() {}
+  }
 };
 </script>
 

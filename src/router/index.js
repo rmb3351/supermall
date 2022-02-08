@@ -13,6 +13,7 @@ const NewAddress = () => import("../views/address/childComponents/NewAddress");
 const ModifyAddress = () =>
   import("../views/address/childComponents/ModifyAddress");
 const Trade = () => import("../views/trade/Trade");
+const HistoryList = () => import("../views/historyList/HistoryList");
 
 Vue.use(VueRouter);
 const routes = [
@@ -24,6 +25,8 @@ const routes = [
   //传参数的方式别忘了，:加组件里有的data
   { path: "/detail/:iid", component: Detail },
   { path: "/login", component: Login },
+
+  // 地址页
   {
     path: "/address/",
     component: Address,
@@ -36,12 +39,20 @@ const routes = [
       { path: "modAddr/:aid", props: true, component: ModifyAddress }
     ]
   },
+
+  // 交易页
   {
     path: "/trade",
     component: Trade,
     props({ query: { from } }) {
       return { from };
     }
+  },
+
+  // 历史订单页
+  {
+    path: "/historyList",
+    component: HistoryList
   }
 ];
 const router = new VueRouter({

@@ -13,7 +13,7 @@
     <!-- 操作按钮框 -->
     <div class="next-choices">
       <button class="shopping" @click="toHome">继续逛逛</button>
-      <button class="listing">我的订单</button>
+      <button class="listing" @click="toHistoryList">我的订单</button>
     </div>
   </div>
 </template>
@@ -38,6 +38,9 @@ export default {
   methods: {
     toHome() {
       this.$router.replace("/home");
+    },
+    toHistoryList() {
+      this.$router.replace("/historyList");
     }
   }
 };

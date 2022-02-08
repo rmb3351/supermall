@@ -24,8 +24,10 @@ export default {
   methods: {
     pushTo(e) {
       // 用事件对象区分点击的位置
-      if (e.target.innerText.indexOf("购物车") != -1) {
+      if (e.target.innerText.indexOf("购物车") !== -1) {
         this.$router.push("/cart");
+      } else if (e.target.innerText.indexOf("订单") !== -1) {
+        this.$router.push("/historyList");
       }
     }
   }

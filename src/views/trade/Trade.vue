@@ -70,6 +70,8 @@ import { COMFIRM_TRADE } from "@/store/mutations-types";
 
 import { resetResizeMixin, deepCopyMixin } from "common/mixins";
 
+import { setItem } from "common/utils";
+
 export default {
   name: "Trade",
   data() {
@@ -99,7 +101,11 @@ export default {
       cartCount: "cartCount",
       singleData: "singleBottomData"
     }),
-    ...mapState({ isSingle: "handlingSinglePurchase" }),
+    ...mapState({
+      isSingle: "handlingSinglePurchase",
+      user: "loggedInUser",
+      info: "userInfo"
+    }),
 
     // 底部栏商品件数及总价
     tradeInfo() {
@@ -157,6 +163,7 @@ export default {
       // 保存支付成功页面所需要的结算金额数据
       this.deepCopy(this.cacheInfo, this.tradeInfo);
       this.$store.commit(COMFIRM_TRADE, this.isSingle);
+      setItem(this.user, this.info[this.user]);
     }
   },
   activated() {

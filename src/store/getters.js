@@ -33,6 +33,8 @@ export default {
     if (!getters.cartLength) return false;
     return getters.checkedCount === getters.cartLength;
   },
+
+  // 用户地址
   userAddresses(state) {
     let addresses;
     if (!state.loggedInUser) {
@@ -43,6 +45,7 @@ export default {
     return addresses;
   },
 
+  // 单独购买时的底部栏数据
   singleBottomData(state, getters) {
     const singlePurchase = state.singlePurchase;
     const bottomData = {
@@ -50,5 +53,10 @@ export default {
       count: singlePurchase.count
     };
     return bottomData;
+  },
+
+  // 历史订单
+  historyList(state) {
+    return state.userInfo[state.loggedInUser].tradedList;
   }
 };
